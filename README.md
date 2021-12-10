@@ -52,6 +52,10 @@ On the front end side of this project, I had to learn a lot about CSS and HTML. 
 I found it tremendously difficult to layout or size elements as I wanted. There are so many things about this project that I would like to improve from a CSS perspective.
 However, I'm afraid it's beyond my scope of knowledge at this point. 
 
+Thank you very much for this course. I've learned that there is tremendous amount of work to be done in the world of Software Development.
+I can't wait to learn more and never stop learning!
+
+
 
 
 
