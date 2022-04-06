@@ -9,7 +9,7 @@ def search_unogs(title):
 
     headers = {
         'x-rapidapi-host': "unogsng.p.rapidapi.com",
-        'x-rapidapi-key': "c43aec1f40msh3fb932bf0de2a5ep1abe40jsn922055654121"
+        'x-rapidapi-key': ""
         }
 
     r = requests.request("GET", url, headers=headers, params=querystring)
