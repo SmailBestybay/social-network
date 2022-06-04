@@ -2,18 +2,48 @@
 <html lang="en">
     <head>
         <title>Search</title>
+        <!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div>
-            <a href="image-search.html">Image Search</a>
-            <a href="advanced-search.html">Advanced Search</a>
-        </div>
-        <div class="search-sections">
-            <form action="https://www.google.com/search">
-                <input class="text-field" type="text" name="q">
-                <input type="submit" value="Google Search">
-            </form>
+        <div class="container">
+            <div class="row justify-content-end" id="mynavbar">
+                <div class="col-1">
+                    <a href="image-search.html">Image</a>
+                </div>
+                <div class="col-1">
+                    <a href="advanced-search.html">Advanced</a>
+                </div> 
+            </div>
+            
+            <div class="row justify-content-center" id="mylogoimg">
+                <div class="col-6">
+                    <img src="https://www.google.com/logos/doodles/2022/celebrating-kiyoshi-kuromiya-6753651837109801.2-l.webp" alt="logo" srcset="">
+                </div>
+            </div>
+    
+            <div class="row justify-content-center" id="mysearch">
+                <div class="col-6">
+                    <form action="https://www.google.com/search">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <input class="form-control" type="text" name="q">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <button type="submit" class="text-nowrap">Google Search</button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="subimt" class="text-nowrap">I'm feeling lucky!</button>
+                                </div>
+                            </div>
+                        </div>
+                     </form>
+                </div>
+            </div>
         </div>
     </body>
 </html>
