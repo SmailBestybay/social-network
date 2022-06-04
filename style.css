@@ -56,6 +56,12 @@ a:hover {
 #mysearch {
     /* background-color: green; */
 }
+#logopart {
+    color: #4285f4;
+    font: 16px/16px roboto-regular, arial, sans-serif;
+    white-space: nowrap;
+}
+
 .form-control {
     /* display: flex; */
     /* z-index: 3; */
