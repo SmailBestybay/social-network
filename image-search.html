@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="container">
+        <div class="container-fluid">
             <div class="row justify-content-end" id="mynavbar">
                 <div class="col-1">
                     <a href="index.html">Google Search</a>
@@ -15,8 +15,10 @@
             </div>
             
             <div class="row justify-content-center" id="mylogoimg">
-                <div class="col-6">
+                <div class="col-6 px-4">
                     <img src="https://images.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" alt="logo">
+                </div>
+                <div style="margin-left: 150%;">
                     <span id="logopart">Images</span>
                 </div>
             </div>
@@ -24,16 +26,14 @@
             <div class="row justify-content-center" id="mysearch">
                 <div class="col-6">
                     <form action="https://www.google.com/search">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-12">
-                                    <input class="form-control" type="text" name="q">
-                                </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <input class="form-control" type="text" name="q">
                             </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <button type="submit" name="tbm" value="isch" class="text-nowrap">Image Search</button>
-                                </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-6">
+                                <button type="submit" name="tbm" value="isch" class="text-nowrap">Image Search</button>
                             </div>
                         </div>
                      </form>

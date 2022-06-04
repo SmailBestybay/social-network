@@ -61,6 +61,11 @@ a:hover {
     font: 16px/16px roboto-regular, arial, sans-serif;
     white-space: nowrap;
 }
+#advanced-search-name {
+    color: #d93025;
+    font-size: 20px;
+    margin: 25px 35px;
+}
 
 .form-control {
     /* display: flex; */
