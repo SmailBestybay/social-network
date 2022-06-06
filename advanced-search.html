@@ -14,31 +14,57 @@
                 </div>
             </div>
             
-            <div class="row justify-content-center">
-                <div class="col-6" id="advanced-search-name">
-                    <label>Advanced Search</label>
+            <div class="row justify-content-start">
+                <div class="col-6" id="div-advanced-search-name">
+                    <label id="label-advanced-search-name">Advanced Search</label>
                 </div>
             </div>
             
             <div style="border-bottom: 1px solid #ebebeb; width:100vw"></div>
             
-            <div class="row justify-content-center" id="mysearch">
-                <div class="col-6">
-                    <form action="https://www.google.com/search">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-12">
-                                    <input class="form-control" type="text" name="q">
-                                </div>
+            <div>
+                <form action="https://www.google.com/search">
+                    <div id="find-pages-with">Find Pages with...</div>
+                    <div class="labelsandfields">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="all-these-words">all these words:</label>
                             </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <button type="submit" name="tbm" value="isch" class="text-nowrap">Image Search</button>
-                                </div>
+                            <div class="col-6">
+                                <input type="text" id="all-these-words" name="as_q">
                             </div>
                         </div>
-                     </form>
-                </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="this-exact-word-or-phrase">this exact word or phrase:</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" id="this-exact-word-or-phrase" name="as_epq">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="any-of-these-words">any of these words:</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" id="any-of-these-words" name="as_oq">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="none-of-these-words">none of these words:</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="text" id="none-of-these-words" name="as_eq">
+                            </div>
+                        </div>
+                        <div class="row justify-content-end">
+                            <div class="col-4 ">
+                                <button class="advanced-button" type="submit">Advanced Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </body>
