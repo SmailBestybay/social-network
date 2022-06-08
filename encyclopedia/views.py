@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from . import util
+import encyclopedia
 
 
 def index(request):
@@ -17,6 +18,13 @@ def entry(request, TITLE):
     return render(request, "encyclopedia/entry.html", {
         "entry": util.get_entry(TITLE)
         })
+
+def search(request):
+    if 'q' in request.GET:
+        return render(request, "encyclopedia/entry.html", {
+            "entry" : util.get_entry(request.GET['q'])
+        }) 
+    
 
 
 
