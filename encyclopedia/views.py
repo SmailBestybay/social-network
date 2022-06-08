@@ -9,6 +9,9 @@ def index(request):
     })
 
 def entry(request, TITLE):
+    if util.get_entry(TITLE) is None:
+        return render(request, "encyclopedia/error.html")
+        
     return render(request, "encyclopedia/entry.html", {
         "entry": util.get_entry(TITLE)
         })
