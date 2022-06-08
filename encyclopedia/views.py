@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -17,8 +18,5 @@ def entry(request, TITLE):
         "entry": util.get_entry(TITLE)
         })
 
-def search(request, QUERY):
 
-    print(QUERY)
-    if QUERY[2:] in util.list_entries:
-        return redirect("entry", QUERY[2:])
+
