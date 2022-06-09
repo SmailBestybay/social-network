@@ -1,13 +1,17 @@
 from random import random
+from turtle import title
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django import forms
 
 from markdown2 import Markdown
 
 from . import util
 # import encyclopedia
 import random
+
+class NewPageForm(forms.Form):
+    title = forms.CharField(label="Title")
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -16,7 +20,9 @@ def index(request):
 
 def entry(request, TITLE):
     if util.get_entry(TITLE) is None:
-        return render(request, "encyclopedia/error.html")
+        return render(request, "encyclopedia/error.html", {
+            "errormessage": "Error 404: Entry not found"
+        })
 
     # need to use safe filter to escape string quotes in the template
     return render(request, "encyclopedia/entry.html", {
@@ -40,11 +46,24 @@ def search(request):
         "q" : request.GET['q']
     })
 
-def randompage(requst):
+def randompage(request):
     random_int = random.randint(0, len(util.list_entries())-1)
     return redirect("entry", util.list_entries()[random_int])
 
-    
+def newpage(request):
+    if request.method == "POST":
+        form = NewPageForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            for entry in util.list_entries():
+                if title.lower() == entry.lower():
+                    return render(request, "encyclopedia/error.html", {
+                        "errormessage": "Entry already exists"
+                    })
+
+    return render(request, "encyclopedia/newpage.html", {
+        "form" : NewPageForm()
+    })
 
 
 
