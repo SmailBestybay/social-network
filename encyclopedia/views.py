@@ -21,9 +21,19 @@ def entry(request, TITLE):
 
 def search(request):
     if 'q' in request.GET:
-        return render(request, "encyclopedia/entry.html", {
-            "entry" : util.get_entry(request.GET['q'])
-        }) 
+        if util.get_entry(request.GET['q']) is not None:
+            return redirect("entry", request.GET['q']) 
+    results = []
+    for entry in util.list_entries():
+        if request.GET['q'].upper() in entry.upper():
+            results.append(entry)
+    if len(results) == 0:
+        return render(request, "encyclopedia/noresults.html")
+    return render(request, "encyclopedia/results.html", {
+        "results" : results,
+        "q" : request.GET['q']
+    })
+
     
 
 
