@@ -1,0 +1,1 @@
+smile's new entry in Django!

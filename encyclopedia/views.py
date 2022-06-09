@@ -11,8 +11,8 @@ from . import util
 import random
 
 class NewPageForm(forms.Form):
-    title = forms.CharField(label="Title", max_length=30)
-    entry = forms.CharField(label="Markdown Content", widget=forms.Textarea)
+    newtitle = forms.CharField(label="Title", max_length=30)
+    newentry = forms.CharField(label="Markdown Content", widget=forms.Textarea)
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -55,13 +55,18 @@ def newpage(request):
     if request.method == "POST":
         form = NewPageForm(request.POST)
         if form.is_valid():
-            title = form.cleaned_data["title"]
+            newtitle = form.cleaned_data["newtitle"]
+            newentry = form.cleaned_data["newentry"] 
+            # check if entry exists
             for entry in util.list_entries():
-                if title.lower() == entry.lower():
+                if newtitle.lower() == entry.lower():
                     return render(request, "encyclopedia/error.html", {
                         "errormessage": "Entry already exists"
                     })
-                # use save entry method here
+            # use save entry method here
+            util.save_entry(newtitle, newentry)
+            return redirect("entry", newtitle)
+
     else:
         form = NewPageForm()
 
