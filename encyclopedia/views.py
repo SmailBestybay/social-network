@@ -1,5 +1,5 @@
 from random import random
-from turtle import title
+from turtle import end_fill, title
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django import forms
@@ -14,6 +14,9 @@ class NewPageForm(forms.Form):
     newtitle = forms.CharField(label="Title", max_length=30)
     newentry = forms.CharField(label="Markdown Content", widget=forms.Textarea)
 
+class EditPageFrom(forms.Form):
+    editarea = forms.CharField(label="Markdown Content", widget=forms.Textarea, initial="entry's markdown text")
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
@@ -27,7 +30,8 @@ def entry(request, TITLE):
 
     # need to use safe filter to escape string quotes in the template
     return render(request, "encyclopedia/entry.html", {
-        "entry": Markdown().convert(util.get_entry(TITLE))
+        "entry": Markdown().convert(util.get_entry(TITLE)),
+        "title": TITLE
         })
 
 def search(request):
@@ -63,7 +67,7 @@ def newpage(request):
                     return render(request, "encyclopedia/error.html", {
                         "errormessage": "Entry already exists"
                     })
-            # use save entry method here
+            # careful, save entry might overwrite old entry without previous checks
             util.save_entry(newtitle, newentry)
             return redirect("entry", newtitle)
 
@@ -74,5 +78,20 @@ def newpage(request):
         "form" : form
     })
 
+def editpage(request, TITLE):
+    if request.method == "POST":
+            form = EditPageFrom(request.POST)
+            if form.is_valid():
+                editedentry = form.cleaned_data["editarea"]
+                util.save_entry(TITLE, editedentry)
+                return redirect("entry", TITLE)
 
+    else:
+        form = EditPageFrom()
+        # prepopulate text area with initial data
+        form.fields["editarea"].initial = util.get_entry(TITLE)
+    return render(request, "encyclopedia/editpage.html", {
+        "form": form,
+        "title": TITLE
+    })
 
