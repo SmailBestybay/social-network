@@ -4,4 +4,4 @@ Things I learned:
 * GET and POST
 * Form classes
 * Templating
-* Much more
+* Git
