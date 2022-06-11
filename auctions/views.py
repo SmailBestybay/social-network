@@ -64,6 +64,17 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+# @login_required
+def create_listing(request):
+    # form to create a new listing must have fields:
+    # title (must be filled)
+    # description (must be filled)
+    # starting bid (must be filled)
+    # URL for an image
+    # category
+    # submit takes to newly created listing
+    pass
+
 def listing(request):
     # Display all details
     # include current price
@@ -79,6 +90,7 @@ def listing(request):
     # if signed in, able to add comments
     pass
 
+# @login_required
 def watchlist(request):
     # display signed in user's watchlist
     # each item in list links to listing
@@ -86,5 +98,6 @@ def watchlist(request):
     pass
 
 def categories(request):
-
+    # Display list of categories
+    # item in list is link to list of active listings in category
     pass

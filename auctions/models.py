@@ -12,11 +12,28 @@ class Listing():
     # description not null
     # starting bid number not null
     # URL for an image
-    # category of listing (eg. Toysm Fashion, Electronics)
+    # category of listing (eg. Toys, Fashion, Electronics)
+    # creator user key
+    # active boolean not null
     pass
 
 class Bid():
+    # id
+    # user key
+    # listing key
+    # bit ammount
     pass
 
 class Comment():
+    # id
+    # listing key
+    # user key
+    # time
+    # content
+    pass
+
+class Watchlist():
+    # id
+    # user key
+    # listing key
     pass
