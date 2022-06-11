@@ -8,6 +8,8 @@ from .models import User
 
 
 def index(request):
+    # active listings should display
+    # title, description, current price, photo(if exists)
     return render(request, "auctions/index.html")
 
 
@@ -61,3 +63,28 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+def listing(request):
+    # Display all details
+    # include current price
+    # if signed in, able to add item to "Watchlist"
+    # if in "Watchlist", able to remove item
+    # if signed it, able to bit on item 
+    # bit must be >= starting bit and > all other bids, else error
+    # if signed it and creator, able to close bid
+    # if closed, make highest bidder the winner
+    # if closed, make listing not active
+    # if signed in on closed listing, display if user won.
+    # diaplay comments
+    # if signed in, able to add comments
+    pass
+
+def watchlist(request):
+    # display signed in user's watchlist
+    # each item in list links to listing
+    # able to remove from watchlist
+    pass
+
+def categories(request):
+
+    pass
