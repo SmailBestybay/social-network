@@ -5,7 +5,11 @@
 
     <ul>
         {% for listing in listings %}
-            <li> For sale: {{ listing.title }}, Description: {{ listing.description }}, Starting Bid: {{ listing.starting_bid }}</li>
+            <li>    
+                <a href="{% url 'listing' listing.id %}"><p> 
+                    For sale: {{ listing.title }}, Description: {{ listing.description }}, Starting Bid: {{ listing.starting_bid }}
+                </p></a>
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

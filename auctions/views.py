@@ -1,11 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
-
 from .models import User, Listing
-
+from .formhelper import NewListingForm
 
 def index(request):
     # active listings should display
@@ -75,9 +74,11 @@ def create_listing(request):
     # URL for an image
     # category
     # submit takes to newly created listing
-    pass
+    return render(request, "auctions/create_listing.html", {
+        "NewListingForm" : NewListingForm()
+    })
 
-def listing(request):
+def listing(request, listing_id):
     # Display all details
     # include current price
     # if signed in, able to add item to "Watchlist"
@@ -90,7 +91,11 @@ def listing(request):
     # if signed in on closed listing, display if user won.
     # diaplay comments
     # if signed in, able to add comments
-    pass
+
+    listing = get_object_or_404(Listing, pk=listing_id)
+    return render(request, "auctions/listing.html", {
+        "listing" : listing
+    })
 
 # @login_required
 def watchlist(request):
