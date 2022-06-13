@@ -17,7 +17,7 @@ class Listing(models.Model):
     # title not null
     title = models.CharField(max_length=64)
     # description not null
-    description  = models.CharField(max_length=64)
+    description = models.CharField(max_length=64)
     # starting bid number not null
     starting_bid = models.IntegerField(validators=[MinValueValidator(0)])
     # URL for an image

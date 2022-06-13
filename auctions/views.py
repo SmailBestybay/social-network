@@ -4,13 +4,15 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Listing
 
 
 def index(request):
     # active listings should display
-    # title, description, current price, photo(if exists)
-    return render(request, "auctions/index.html")
+    # title, description, starting bid, current price, photo(if exists)
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all()
+        })
 
 
 def login_view(request):
