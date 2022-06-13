@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.validators import MinValueValidator
 
 class User(AbstractUser):
     
@@ -18,7 +19,7 @@ class Listing(models.Model):
     # description not null
     description  = models.CharField(max_length=64)
     # starting bid number not null
-    starting_bid = models.IntegerField()
+    starting_bid = models.IntegerField(validators=[MinValueValidator(0)])
     # URL for an image
     image = models.URLField(blank=True)
     # category of listing (eg. Toys, Fashion, Electronics)
@@ -28,23 +29,23 @@ class Listing(models.Model):
     # creator user key AKA owner of the listing, related name returns all users that have listings
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sellers")
     # winner, user that has won the listing, related name should return all bids won by user
-    winner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids_won")
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids_won", null=True, blank=True)
 
 
     def __str__(self):
         return f"{self.id}: {self.title}"
 
-# class Bid(models.Model):
-#     # id - auto create
-#     # user key - each bid belongs to a user, related name will return all users that have a bid AKA bidders.
-#     user = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bidders")
-#     # listing key, every bid is joined to a listing, related name should return all listings that have bids 
-#     listing_key = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="have_bids")
-#     # bid ammount
-#     bid_ammount = models.IntegerField()
+class Bid(models.Model):
+    # id - auto create
+    # user key - each bid belongs to a user, related name will return all users that have a bid AKA bidders.
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidders")
+    # listing key, every bid is joined to a listing, related name should return all listings that have bids 
+    listing_key = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="have_bids")
+    # bid ammount
+    bid_amount = models.IntegerField(validators=[MinValueValidator(0)])
 
-#     def __str__(self):
-#         return f"{self.id}: {self.amount}"
+    def __str__(self):
+        return f"{self.id}: {self.bid_amount}"
 
 # class Comment(models.Model):
 #     # id
