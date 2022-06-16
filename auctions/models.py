@@ -9,7 +9,7 @@ class User(AbstractUser):
     # listings many to many relationship as a user can have many listings
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} "
+        return f"{self.username} "
 
 class Listing(models.Model):
     # Listing needs to have:
