@@ -55,8 +55,12 @@ class Bid(models.Model):
 #     # content
 #     pass
 
-# class Watchlist(models.Model):
-#     # id
-#     # user key
-#     # listing key
-#     pass
+class Watchlist(models.Model):
+    # id
+    # user key, related name should return all users that have this watchlisted
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users_watching")
+    # listing key, related name should retrun all listing that are watchlisted
+    listing_key = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchlisted")
+    
+    def __str__(self):
+        return f"Watchlist id: {self.id}"

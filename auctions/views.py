@@ -110,7 +110,7 @@ def create_listing(request):
 def listing(request, listing_id):
     # Display all details
     # include current price
-    # if signed in, able to add item to "Watchlist"
+    # if signed in, able to add item to "Watchlist" TODO
     # if in "Watchlist", able to remove item
     # if signed it, able to bit on item 
     # bit must be >= starting bit and > all other bids, else error
@@ -126,7 +126,7 @@ def listing(request, listing_id):
         "listing" : listing
     })
 
-# @login_required
+@login_required(login_url='login')
 def watchlist(request):
     # display signed in user's watchlist
     # each item in list links to listing
