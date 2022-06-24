@@ -108,6 +108,7 @@ def create_listing(request):
     })
 
 def listing(request, listing_id):
+    # TODO add button and post method.
     # if signed in, able to add item to "Watchlist" 
     # if in "Watchlist", able to remove item
 
@@ -122,9 +123,6 @@ def listing(request, listing_id):
     # if signed in, able to add comments
 
     listing = get_object_or_404(Listing, pk=listing_id)
-    # TODO pass users wathclist data to template,
-    # in template check if listing in wathclist
-    # Is this listing in wathlist model with this user.
     watchlisted = listing.watchlisted.filter(user=request.user.id).exists()
 
     return render(request, "auctions/listing.html", {

@@ -5,12 +5,16 @@
         For sale: {{ listing.title }}, Description: {{ listing.description }}, Starting Bid: {{ listing.starting_bid }}
 
         {% if user.is_authenticated %}
-            <form action="post">
+            <form action="listing" method="post">
                 {% csrf_token %}
                 <!-- if already added to watchlist remove button -->
                 <!-- else add to watchlist button -->
+                {% if watchlisted %}
+                    <button class="btn btn-success" type="submit" name="Add">Add to Watchlist</button>
+                {% else %}
+                    <button class="btn btn-danger" type="submit" name="Remove">Remove from Watchlist</button>
+                {% endif %}
             </form>
-            {{ watchlisted }}
         {% endif %}
 
 {% endblock %}
