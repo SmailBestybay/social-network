@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from .models import User, Listing
+from .models import User, Listing, Watchlist
 from .formhelper import NewListingForm
 from django.contrib.auth.decorators import login_required
 
@@ -108,10 +108,10 @@ def create_listing(request):
     })
 
 def listing(request, listing_id):
-    # Display all details
-    # include current price
-    # if signed in, able to add item to "Watchlist" TODO
+    # if signed in, able to add item to "Watchlist" 
     # if in "Watchlist", able to remove item
+
+
     # if signed it, able to bit on item 
     # bit must be >= starting bit and > all other bids, else error
     # if signed it and creator, able to close bid
@@ -122,8 +122,14 @@ def listing(request, listing_id):
     # if signed in, able to add comments
 
     listing = get_object_or_404(Listing, pk=listing_id)
+    # TODO pass users wathclist data to template,
+    # in template check if listing in wathclist
+    # Is this listing in wathlist model with this user.
+    watchlisted = listing.watchlisted.filter(user=request.user.id).exists()
+
     return render(request, "auctions/listing.html", {
-        "listing" : listing
+        "listing" : listing,
+        "watchlisted" : watchlisted
     })
 
 @login_required(login_url='login')

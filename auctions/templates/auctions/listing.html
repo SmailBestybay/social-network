@@ -3,4 +3,14 @@
 {% block body %}
     <h2>Listings</h2>
         For sale: {{ listing.title }}, Description: {{ listing.description }}, Starting Bid: {{ listing.starting_bid }}
+
+        {% if user.is_authenticated %}
+            <form action="post">
+                {% csrf_token %}
+                <!-- if already added to watchlist remove button -->
+                <!-- else add to watchlist button -->
+            </form>
+            {{ watchlisted }}
+        {% endif %}
+
 {% endblock %}

@@ -63,4 +63,4 @@ class Watchlist(models.Model):
     listing_key = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchlisted")
     
     def __str__(self):
-        return f"Watchlist id: {self.id}"
+        return f"Watchlist id: {self.id}, {self.user}, {self.listing_key}"
