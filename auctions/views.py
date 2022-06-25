@@ -6,6 +6,7 @@ from django.urls import reverse
 from .models import User, Listing, Watchlist
 from .formhelper import NewListingForm
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
     # active listings should display
@@ -108,11 +109,19 @@ def create_listing(request):
     })
 
 def listing(request, listing_id):
-    # TODO add button and post method.
-    # if signed in, able to add item to "Watchlist" 
-    # if in "Watchlist", able to remove item
+    if request.method == "POST":
+        # if value of wathlist button is add, add listing to watchlist
+        if "Add" in request.POST:
+            user = request.user
+            listing = Listing.objects.get(id=listing_id)
+            watchlist_item = Watchlist(user=user, listing_key=listing)
+            watchlist_item.save()
+        # if value of wathlist button is remove, remove listing from watchlist
+        if "Remove" in request.POST:
+            watchlist_item = Watchlist.objects.get(id=request.POST["Remove"])
+            watchlist_item.delete()
 
-
+            
     # if signed it, able to bit on item 
     # bit must be >= starting bit and > all other bids, else error
     # if signed it and creator, able to close bid
@@ -123,11 +132,18 @@ def listing(request, listing_id):
     # if signed in, able to add comments
 
     listing = get_object_or_404(Listing, pk=listing_id)
-    watchlisted = listing.watchlisted.filter(user=request.user.id).exists()
+    try:
+        watchlist_item = listing.watchlisted.get(user=request.user.id)
+        watchlisted = True
+    except ObjectDoesNotExist:
+        watchlist_item = None
+        watchlisted = False
+
 
     return render(request, "auctions/listing.html", {
         "listing" : listing,
-        "watchlisted" : watchlisted
+        "watchlisted" : watchlisted,
+        "watchlist_item" : watchlist_item
     })
 
 @login_required(login_url='login')
