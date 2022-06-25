@@ -42,7 +42,7 @@ class Bid(models.Model):
     # listing key, every bid is joined to a listing, related name should return all listings that have bids 
     listing_key = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="have_bids")
     # bid ammount
-    bid_amount = models.IntegerField(validators=[MinValueValidator(0)])
+    amount = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
         return f"{self.id}: {self.bid_amount}"
