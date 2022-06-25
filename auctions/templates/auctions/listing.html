@@ -2,9 +2,10 @@
 
 {% block body %}
     <h2>Listings</h2>
-        For sale: {{ listing.title }}, Description: {{ listing.description }}, Starting Bid: {{ listing.starting_bid }}
+        For sale: {{ listing.title }}, Description: {{ listing.description }}, Starting Bid: {{ listing.starting_bid }}, Owner: {{ listing.owner }}
 
         {% if user.is_authenticated %}
+        
             <form action="{% url 'listing' listing.id %}" method="post">
                 {% csrf_token %}
                 {% if watchlisted %}
@@ -13,6 +14,16 @@
                     <button class="btn btn-success" type="submit" name="Add">Add to Watchlist</button>
                 {% endif %}
             </form>
+
+            <form action="{% url 'listing' listing.id %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input autofocus class="form-control" type="number" name="bid" min="{{ listing.starting_bid }}" placeholder="{{ listing.starting_bid }}">
+                </div>
+                <input class="btn btn-primary" type="submit" value="Place Bid">
+            </form>
+            {{ bids }}
+            {{ highest_bid }}
         {% endif %}
 
 {% endblock %}

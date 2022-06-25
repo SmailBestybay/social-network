@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from .models import User, Listing, Watchlist
+from .models import User, Listing, Watchlist, Bid
 from .formhelper import NewListingForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -110,18 +110,16 @@ def create_listing(request):
 
 def listing(request, listing_id):
     if request.method == "POST":
-        # if value of wathlist button is add, add listing to watchlist
         if "Add" in request.POST:
             user = request.user
             listing = Listing.objects.get(id=listing_id)
             watchlist_item = Watchlist(user=user, listing_key=listing)
             watchlist_item.save()
-        # if value of wathlist button is remove, remove listing from watchlist
         if "Remove" in request.POST:
             watchlist_item = Watchlist.objects.get(id=request.POST["Remove"])
             watchlist_item.delete()
 
-            
+    # TODO        
     # if signed it, able to bit on item 
     # bit must be >= starting bit and > all other bids, else error
     # if signed it and creator, able to close bid
@@ -139,11 +137,22 @@ def listing(request, listing_id):
         watchlist_item = None
         watchlisted = False
 
+    # all bids on this listing
+    bids = Bid.objects.all().filter(listing_key=listing)
+    highest_bid = listing.starting_bid
+    # find biggest bid so far
+    for bid in bids:
+        if bid.amount > highest_bid:
+            highest_bid = bid.amount
+
+
 
     return render(request, "auctions/listing.html", {
         "listing" : listing,
         "watchlisted" : watchlisted,
-        "watchlist_item" : watchlist_item
+        "watchlist_item" : watchlist_item,
+        "bids" : bids,
+        "highest_bid" : highest_bid
     })
 
 @login_required(login_url='login')
