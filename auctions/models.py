@@ -24,8 +24,8 @@ class Listing(models.Model):
     image = models.URLField(blank=True)
     # category of listing (eg. Toys, Fashion, Electronics)
     category = models.CharField(max_length=64, blank=True)
-    # active boolean not null
-    active = models.BooleanField(default=True)
+    # closed boolean not null
+    closed = models.BooleanField(default=False)
     # creator user key AKA owner of the listing, related name returns all users that have listings
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sellers")
     # winner, user that has won the listing, related name should return all bids won by user
@@ -45,7 +45,7 @@ class Bid(models.Model):
     amount = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return f"{self.id}, Amount: {self.amount}"
+        return f"{self.id}, {self.user} Amount: {self.amount}"
 
 # class Comment(models.Model):
 #     # id

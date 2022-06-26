@@ -112,7 +112,7 @@ def create_listing(request):
 def listing(request, listing_id):
     
     # TODO        
-    # if signed it and creator, able to close bid
+    # if signed it and creator, able to close listing
     # if closed, make highest bidder the winner
     # if closed, make listing not active
     # if signed in on closed listing, display if user won.
@@ -120,6 +120,19 @@ def listing(request, listing_id):
     # if signed in, able to add comments
 
     listing = get_object_or_404(Listing, pk=listing_id)
+    try:
+        watchlist_item = listing.watchlisted.get(user=request.user.id)
+        watchlisted = True
+    except ObjectDoesNotExist:
+        watchlist_item = None
+        watchlisted = False
+    # all bids on this listing
+    bids = Bid.objects.all().filter(listing=listing)
+    highest_bid = bids.first()
+    for bid in bids:
+        if bid.amount > highest_bid.amount and bid.amount > listing.starting_bid:
+            highest_bid = get_object_or_404(Bid, pk=bid.id)
+
     
     if request.method == "POST":
         if "add_or_remove" in request.POST:
@@ -131,28 +144,11 @@ def listing(request, listing_id):
             if not created:
                 watchlist_item.delete()
             return redirect("listing", listing.id)
-        
-    try:
-        watchlist_item = listing.watchlisted.get(user=request.user.id)
-        watchlisted = True
-    except ObjectDoesNotExist:
-        watchlist_item = None
-        watchlisted = False
-
-    # all bids on this listing
-    bids = Bid.objects.all().filter(listing=listing)
-    highest_bid = listing.starting_bid
-    for bid in bids:
-        if bid.amount > highest_bid:
-            highest_bid = bid.amount
-
-    if request.method == "POST":
         if "bid" in request.POST:
             placed_bid = request.POST["bid"]
-            if int(placed_bid) > highest_bid:
+            if int(placed_bid) > highest_bid.amount:
                 Bid(user=request.user, listing=listing, amount=placed_bid).save()
                 bids = Bid.objects.all().filter(listing=listing)
-                highest_bid = int(placed_bid)
                 return redirect("listing", listing.id)
             else:
                 return render(request, "auctions/listing.html", {
@@ -163,6 +159,10 @@ def listing(request, listing_id):
                     "highest_bid" : highest_bid,
                     "message" : "Bid amount must be higher then starting and current bid"
                 })
+        if "close_listing" in request.POST:
+            listing.closed = True
+            #TODO get bid objects with highest bid
+            # listing.winner = 
 
     return render(request, "auctions/listing.html", {
         "listing" : listing,

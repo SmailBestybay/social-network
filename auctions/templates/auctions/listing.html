@@ -29,10 +29,24 @@
             <form action="{% url 'listing' listing.id %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <input autofocus class="form-control" type="number" name="bid" min="{{ highest_bid }}" placeholder="{{ highest_bid }}">
+                    <input autofocus class="form-control" type="number" name="bid" min="{{ highest_bid.amount }}" placeholder="{{ highest_bid.amount }}">
                 </div>
                 <input class="btn btn-primary" type="submit" value="Place Bid">
             </form>
+
+            <div>
+                {% if user == listing.owner %}
+                    This listing belongs to {{ user.username }}
+                    <form action="{% url 'listing' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-primary" type="submit" name="close_listing">Close Listing</button>
+                    </form>
+                {% else %}
+                    This listing does not belong to {{ user.username }}
+                    <br>
+                    It belongs to {{ listing.owner }}
+                {% endif %}
+            </div>
         {% endif %}
 
 {% endblock %}
