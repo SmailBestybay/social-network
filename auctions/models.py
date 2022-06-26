@@ -40,12 +40,12 @@ class Bid(models.Model):
     # user key - each bid belongs to a user, related name will return all users that have a bid AKA bidders.
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidders")
     # listing key, every bid is joined to a listing, related name should return all listings that have bids 
-    listing_key = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="have_bids")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="have_bids")
     # bid ammount
     amount = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return f"{self.id}: {self.bid_amount}"
+        return f"{self.id}: {self.amount}"
 
 # class Comment(models.Model):
 #     # id
@@ -60,7 +60,7 @@ class Watchlist(models.Model):
     # user key, related name should return all users that have this watchlisted
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users_watching")
     # listing key, related name should retrun all listing that are watchlisted
-    listing_key = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchlisted")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchlisted")
     
     def __str__(self):
-        return f"Watchlist id: {self.id}, {self.user}, {self.listing_key}"
+        return f"Watchlist id: {self.id}, {self.user}, {self.listing}"

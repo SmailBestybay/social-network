@@ -113,7 +113,7 @@ def listing(request, listing_id):
         if "Add" in request.POST:
             user = request.user
             listing = Listing.objects.get(id=listing_id)
-            watchlist_item = Watchlist(user=user, listing_key=listing)
+            watchlist_item = Watchlist(user=user, listing=listing)
             watchlist_item.save()
         if "Remove" in request.POST:
             watchlist_item = Watchlist.objects.get(id=request.POST["Remove"])
@@ -138,7 +138,7 @@ def listing(request, listing_id):
         watchlisted = False
 
     # all bids on this listing
-    bids = Bid.objects.all().filter(listing_key=listing)
+    bids = Bid.objects.all().filter(listing=listing)
     highest_bid = listing.starting_bid
     # find biggest bid so far
     for bid in bids:
