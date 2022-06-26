@@ -45,7 +45,7 @@ class Bid(models.Model):
     amount = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
-        return f"{self.id}: {self.amount}"
+        return f"{self.id}, Amount: {self.amount}"
 
 # class Comment(models.Model):
 #     # id

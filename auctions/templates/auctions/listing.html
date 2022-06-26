@@ -2,6 +2,11 @@
 
 {% block body %}
     <h2>Listings</h2>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
         For sale: {{ listing.title }}, Description: {{ listing.description }}, Starting Bid: {{ listing.starting_bid }}, Owner: {{ listing.owner }}
 
         {% if user.is_authenticated %}
@@ -9,21 +14,25 @@
             <form action="{% url 'listing' listing.id %}" method="post">
                 {% csrf_token %}
                 {% if watchlisted %}
-                    <button class="btn btn-danger" type="submit" name="Remove" value="{{ watchlist_item.id }}">Remove from Watchlist</button>
+                    <button class="btn btn-danger" type="submit" name="add_or_remove" value="{{ watchlist_item.id }}">Remove from Watchlist</button>
                 {% else %}
-                    <button class="btn btn-success" type="submit" name="Add">Add to Watchlist</button>
+                    <button class="btn btn-success" type="submit" name="add_or_remove">Add to Watchlist</button>
                 {% endif %}
             </form>
+
+            <div>
+                {{ bids }}
+                <br>
+                Highest bid: {{ highest_bid }}
+            </div>
 
             <form action="{% url 'listing' listing.id %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <input autofocus class="form-control" type="number" name="bid" min="{{ listing.starting_bid }}" placeholder="{{ listing.starting_bid }}">
+                    <input autofocus class="form-control" type="number" name="bid" min="{{ highest_bid }}" placeholder="{{ highest_bid }}">
                 </div>
                 <input class="btn btn-primary" type="submit" value="Place Bid">
             </form>
-            {{ bids }}
-            {{ highest_bid }}
         {% endif %}
 
 {% endblock %}

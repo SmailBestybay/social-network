@@ -1,3 +1,4 @@
+from email import message
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -109,27 +110,28 @@ def create_listing(request):
     })
 
 def listing(request, listing_id):
-    if request.method == "POST":
-        if "Add" in request.POST:
-            user = request.user
-            listing = Listing.objects.get(id=listing_id)
-            watchlist_item = Watchlist(user=user, listing=listing)
-            watchlist_item.save()
-        if "Remove" in request.POST:
-            watchlist_item = Watchlist.objects.get(id=request.POST["Remove"])
-            watchlist_item.delete()
-
+    
     # TODO        
-    # if signed it, able to bit on item 
-    # bit must be >= starting bit and > all other bids, else error
     # if signed it and creator, able to close bid
     # if closed, make highest bidder the winner
     # if closed, make listing not active
     # if signed in on closed listing, display if user won.
-    # diaplay comments
+    # display comments
     # if signed in, able to add comments
 
     listing = get_object_or_404(Listing, pk=listing_id)
+    
+    if request.method == "POST":
+        if "add_or_remove" in request.POST:
+            # using get_or_create method in order to avoid saving twice
+            watchlist_item, created = Watchlist.objects.get_or_create(
+                user=request.user,
+                listing=listing
+            )
+            if not created:
+                watchlist_item.delete()
+            return redirect("listing", listing.id)
+        
     try:
         watchlist_item = listing.watchlisted.get(user=request.user.id)
         watchlisted = True
@@ -140,12 +142,27 @@ def listing(request, listing_id):
     # all bids on this listing
     bids = Bid.objects.all().filter(listing=listing)
     highest_bid = listing.starting_bid
-    # find biggest bid so far
     for bid in bids:
         if bid.amount > highest_bid:
             highest_bid = bid.amount
 
-
+    if request.method == "POST":
+        if "bid" in request.POST:
+            placed_bid = request.POST["bid"]
+            if int(placed_bid) > highest_bid:
+                Bid(user=request.user, listing=listing, amount=placed_bid).save()
+                bids = Bid.objects.all().filter(listing=listing)
+                highest_bid = int(placed_bid)
+                return redirect("listing", listing.id)
+            else:
+                return render(request, "auctions/listing.html", {
+                    "listing" : listing,
+                    "watchlisted" : watchlisted,
+                    "watchlist_item" : watchlist_item,
+                    "bids" : bids,
+                    "highest_bid" : highest_bid,
+                    "message" : "Bid amount must be higher then starting and current bid"
+                })
 
     return render(request, "auctions/listing.html", {
         "listing" : listing,
