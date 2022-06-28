@@ -58,6 +58,14 @@
                     You are the winner!
                 </div>
             {% endif %}
+
+            <div>
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    {{ comment_form }}
+                    <input class="btn btn-primary" type="submit" value="Submit">
+                </form>
+            </div>
         {% endif %}
 
 

@@ -1,17 +1,14 @@
-from email import message
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from .models import User, Listing, Watchlist, Bid
-from .formhelper import NewListingForm
+from .models import User, Listing, Watchlist, Bid, Comment
+from .formhelper import NewListingForm, NewCommentForm
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
-    # active listings should display
-    # title, description, starting bid, current price, photo(if exists)
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.all()
         })
@@ -68,6 +65,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
 @login_required(login_url='login')
 def create_listing(request):
     if request.method == "POST":
@@ -82,9 +80,6 @@ def create_listing(request):
             starting_bid = form.cleaned_data["starting_bid"]
             image = form.cleaned_data["image"]
             category = form.cleaned_data["category"]
-            # get id of the user creating the listing.
-            # all model instances have id so need user.id
-            # but in our case we need an instance of a user as a whole.
             owner = request.user
 
             # instantiate an object of models class
@@ -109,13 +104,10 @@ def create_listing(request):
         "form" : NewListingForm()
     })
 
+
 def listing(request, listing_id):
     
     # TODO        
-    # if signed it and creator, able to close listing
-    # if closed, make highest bidder the winner
-    # if closed, make listing not active
-    # if signed in on closed listing, display if user won.
     # display comments
     # if signed in, able to add comments
 
@@ -134,7 +126,6 @@ def listing(request, listing_id):
         if bid.amount > highest_bid.amount and bid.amount > listing.starting_bid:
             highest_bid = get_object_or_404(Bid, pk=bid.id)
 
-    
     if request.method == "POST":
         if "add_or_remove" in request.POST:
             # using get_or_create method in order to avoid saving twice
@@ -167,6 +158,7 @@ def listing(request, listing_id):
                     "watchlist_item" : watchlist_item,
                     "bids" : bids,
                     "highest_bid" : highest_bid,
+                    "comment_form" : NewCommentForm(),
                     "message" : "Bid amount must be higher then starting and current bid"
                 })
 
@@ -177,20 +169,35 @@ def listing(request, listing_id):
             listing.winner = bid.user
             listing.save()
             return redirect("listing", listing.id)
+        
+        comment_form = NewCommentForm(request.POST)
+        if comment_form.is_valid():
+            user = comment_form.cleaned_data["user"]
+            # no need to instantiate listing field as we already have it
+            content = comment_form.cleaned_data["content"]
+            Comment(user=user, listing=listing, content=content).save()
+            return redirect("listing", listing.id)
+        else:
+            return render(request, "auctions/listing.html", {
+                "listing" : listing,
+                "watchlisted" : watchlisted,
+                "watchlist_item" : watchlist_item,
+                "bids" : bids,
+                "highest_bid" : highest_bid,
+                "comment_form" : comment_form
+            })
 
     return render(request, "auctions/listing.html", {
         "listing" : listing,
         "watchlisted" : watchlisted,
         "watchlist_item" : watchlist_item,
         "bids" : bids,
-        "highest_bid" : highest_bid
+        "highest_bid" : highest_bid,
+        "comment_form" : NewCommentForm()
     })
 
 @login_required(login_url='login')
 def watchlist(request):
-    # display signed in user's watchlist
-    # each item in list links to listing
-    # able to remove from watchlist
     user = request.user
     watchlist = Watchlist.objects.all().filter(user=user)
     listings = []
@@ -198,7 +205,6 @@ def watchlist(request):
     for item in watchlist:
         listings.append(item.listing)
 
-    
     return render(request, "auctions/watchlist.html", {
         "listings" : listings
     })
