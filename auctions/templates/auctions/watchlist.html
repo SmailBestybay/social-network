@@ -1,0 +1,22 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+    <h2>Watchlist</h2>
+
+    {% if user.is_authenticated %}
+        <ul>
+            {% for listing in listings %}
+                <li>    
+                    <a href="{% url 'listing' listing.id %}"><p> 
+                        For sale: {{ listing.title }}, Description: {{ listing.description }}, 
+                        Starting Bid: {{ listing.starting_bid }}, Owner: {{listing.owner}}
+                    </p></a>
+                </li>
+                {% empty %}
+                <li> You have nothing watchlisted </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+{% endblock %}

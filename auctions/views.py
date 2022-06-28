@@ -150,6 +150,7 @@ def listing(request, listing_id):
             placed_bid = request.POST["bid"]
             if placed_bid == "":
                 return redirect("listing", listing.id)
+
             # need if no bids have been placed yet.
             elif highest_bid == None and int(placed_bid) > listing.starting_bid:
                 Bid(user=request.user, listing=listing, amount=placed_bid).save()
@@ -168,7 +169,7 @@ def listing(request, listing_id):
                     "highest_bid" : highest_bid,
                     "message" : "Bid amount must be higher then starting and current bid"
                 })
-                
+
         if "close_listing" in request.POST:
             listing.closed = True
             #TODO get bid objects with highest bid
@@ -190,7 +191,17 @@ def watchlist(request):
     # display signed in user's watchlist
     # each item in list links to listing
     # able to remove from watchlist
-    pass
+    user = request.user
+    watchlist = Watchlist.objects.all().filter(user=user)
+    listings = []
+
+    for item in watchlist:
+        listings.append(item.listing)
+
+    
+    return render(request, "auctions/watchlist.html", {
+        "listings" : listings
+    })
 
 def categories(request):
     # Display list of categories

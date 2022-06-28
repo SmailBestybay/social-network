@@ -51,8 +51,14 @@
                 It belongs to {{ listing.owner }}
                 <br>
                 Listing winner: {{ listing.winner }}
-
             </div>
+
+            {% if listing.closed and user == listing.winner %}
+                <div>
+                    You are the winner!
+                </div>
+            {% endif %}
         {% endif %}
+
 
 {% endblock %}
