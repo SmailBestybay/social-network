@@ -25,27 +25,33 @@
                 <br>
                 Highest bid: {{ highest_bid }}
             </div>
-
-            <form action="{% url 'listing' listing.id %}" method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input autofocus class="form-control" type="number" name="bid" min="{{ highest_bid.amount }}" placeholder="{{ highest_bid.amount }}">
-                </div>
-                <input class="btn btn-primary" type="submit" value="Place Bid">
-            </form>
-
+            {% if not listing.closed %}
+                <form action="{% url 'listing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {% if highest_bid == None %}
+                            <input autofocus class="form-control" type="number" name="bid" min="{{ listing.starting_bid }}" placeholder="{{ listing.starting_bid }}">
+                        {% else %}
+                            <input autofocus class="form-control" type="number" name="bid" min="{{ highest_bid.amount }}" placeholder="{{ highest_bid.amount }}">
+                        {% endif %}
+                    </div>
+                    <input class="btn btn-primary" type="submit" value="Place Bid">
+                </form>
+            {% endif %}
+            
             <div>
-                {% if user == listing.owner %}
+                {% if user == listing.owner and not listing.closed %}
                     This listing belongs to {{ user.username }}
                     <form action="{% url 'listing' listing.id %}" method="post">
                         {% csrf_token %}
-                        <button class="btn btn-primary" type="submit" name="close_listing">Close Listing</button>
+                        <button class="btn btn-primary" type="submit" name="close_listing" value="{{ highest_bid.id }}">Close Listing</button>
                     </form>
-                {% else %}
-                    This listing does not belong to {{ user.username }}
-                    <br>
-                    It belongs to {{ listing.owner }}
                 {% endif %}
+                
+                It belongs to {{ listing.owner }}
+                <br>
+                Listing winner: {{ listing.winner }}
+
             </div>
         {% endif %}
 

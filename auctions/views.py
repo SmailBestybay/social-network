@@ -129,6 +129,7 @@ def listing(request, listing_id):
     # all bids on this listing
     bids = Bid.objects.all().filter(listing=listing)
     highest_bid = bids.first()
+
     for bid in bids:
         if bid.amount > highest_bid.amount and bid.amount > listing.starting_bid:
             highest_bid = get_object_or_404(Bid, pk=bid.id)
@@ -144,12 +145,20 @@ def listing(request, listing_id):
             if not created:
                 watchlist_item.delete()
             return redirect("listing", listing.id)
+        
         if "bid" in request.POST:
             placed_bid = request.POST["bid"]
-            if int(placed_bid) > highest_bid.amount:
-                Bid(user=request.user, listing=listing, amount=placed_bid).save()
-                bids = Bid.objects.all().filter(listing=listing)
+            if placed_bid == "":
                 return redirect("listing", listing.id)
+            # need if no bids have been placed yet.
+            elif highest_bid == None and int(placed_bid) > listing.starting_bid:
+                Bid(user=request.user, listing=listing, amount=placed_bid).save()
+                return redirect("listing", listing.id)
+
+            elif int(placed_bid) > highest_bid.amount:
+                Bid(user=request.user, listing=listing, amount=placed_bid).save()
+                return redirect("listing", listing.id)
+
             else:
                 return render(request, "auctions/listing.html", {
                     "listing" : listing,
@@ -159,10 +168,14 @@ def listing(request, listing_id):
                     "highest_bid" : highest_bid,
                     "message" : "Bid amount must be higher then starting and current bid"
                 })
+                
         if "close_listing" in request.POST:
             listing.closed = True
             #TODO get bid objects with highest bid
-            # listing.winner = 
+            bid = get_object_or_404(Bid, pk=request.POST["close_listing"])
+            listing.winner = bid.user
+            listing.save()
+            return redirect("listing", listing.id)
 
     return render(request, "auctions/listing.html", {
         "listing" : listing,
