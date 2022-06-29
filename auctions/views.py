@@ -79,7 +79,7 @@ def create_listing(request):
             description = form.cleaned_data["description"]
             starting_bid = form.cleaned_data["starting_bid"]
             image = form.cleaned_data["image"]
-            category = form.cleaned_data["category"]
+            category = form.cleaned_data["category"].lower()
             owner = request.user
 
             # instantiate an object of models class
@@ -221,4 +221,19 @@ def watchlist(request):
 def categories(request):
     # Display list of categories
     # item in list is link to list of active listings in category
-    pass
+    categories = []
+    listings = Listing.objects.all()
+    for listing in listings:
+        if listing.category != "":
+            categories.append(listing.category)
+
+    return render(request, "auctions/categories.html", {
+        "categories" : categories
+    })
+
+def category(request, category_name):
+    listings = Listing.objects.all().filter(category=category_name)
+    return render(request, "auctions/category.html", {
+        "listings" : listings,
+        "category" : category_name.capitalize()
+    })

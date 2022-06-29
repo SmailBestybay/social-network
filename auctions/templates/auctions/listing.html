@@ -72,7 +72,7 @@
                 <ul>
                     {% for comment in comments %}
                     <li>
-                        {{ comment.content }}
+                        {{ comment.user }} commented: {{ comment.content }}
                     </li>
                     {% endfor %}
                 </ul>
