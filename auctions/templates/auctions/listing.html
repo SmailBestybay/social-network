@@ -8,7 +8,7 @@
     {% endif %}
 
         For sale: {{ listing.title }}, Description: {{ listing.description }}, Starting Bid: {{ listing.starting_bid }}, Owner: {{ listing.owner }}
-
+        <img src="{{ listing.image }}" alt="{{ listing.description }}" width="100" height="100">
         {% if user.is_authenticated %}
         
             <form action="{% url 'listing' listing.id %}" method="post">

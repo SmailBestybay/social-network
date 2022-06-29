@@ -221,11 +221,11 @@ def watchlist(request):
 def categories(request):
     # Display list of categories
     # item in list is link to list of active listings in category
-    categories = []
+    categories = set()
     listings = Listing.objects.all()
     for listing in listings:
         if listing.category != "":
-            categories.append(listing.category)
+            categories.add(listing.category.capitalize())
 
     return render(request, "auctions/categories.html", {
         "categories" : categories
@@ -235,5 +235,5 @@ def category(request, category_name):
     listings = Listing.objects.all().filter(category=category_name)
     return render(request, "auctions/category.html", {
         "listings" : listings,
-        "category" : category_name.capitalize()
+        "category" : category_name
     })
