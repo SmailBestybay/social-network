@@ -106,10 +106,6 @@ def create_listing(request):
 
 
 def listing(request, listing_id):
-    
-    # TODO        
-    # display comments
-    # if signed in, able to add comments
 
     listing = get_object_or_404(Listing, pk=listing_id)
 
@@ -225,7 +221,7 @@ def categories(request):
     listings = Listing.objects.all()
     for listing in listings:
         if listing.category != "":
-            categories.add(listing.category.capitalize())
+            categories.add(listing.category)
 
     return render(request, "auctions/categories.html", {
         "categories" : categories
@@ -235,5 +231,5 @@ def category(request, category_name):
     listings = Listing.objects.all().filter(category=category_name)
     return render(request, "auctions/category.html", {
         "listings" : listings,
-        "category" : category_name
+        "category" : category_name.capitalize()
     })
