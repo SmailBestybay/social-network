@@ -66,6 +66,18 @@
                     <input class="btn btn-primary" type="submit" value="Submit">
                 </form>
             </div>
+
+            <div>
+                {{ comments }}
+                <ul>
+                    {% for comment in comments %}
+                    <li>
+                        {{ comment.content }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
         {% endif %}
 
 

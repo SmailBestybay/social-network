@@ -112,19 +112,25 @@ def listing(request, listing_id):
     # if signed in, able to add comments
 
     listing = get_object_or_404(Listing, pk=listing_id)
+
+    # watchlist logic
     try:
         watchlist_item = listing.watchlisted.get(user=request.user.id)
         watchlisted = True
     except ObjectDoesNotExist:
         watchlist_item = None
         watchlisted = False
+    
+    # bid logic
     # all bids on this listing
     bids = Bid.objects.all().filter(listing=listing)
     highest_bid = bids.first()
-
     for bid in bids:
         if bid.amount > highest_bid.amount and bid.amount > listing.starting_bid:
             highest_bid = get_object_or_404(Bid, pk=bid.id)
+
+    # comments logic
+    comments = listing.comments.all()
 
     if request.method == "POST":
         if "add_or_remove" in request.POST:
@@ -159,6 +165,7 @@ def listing(request, listing_id):
                     "bids" : bids,
                     "highest_bid" : highest_bid,
                     "comment_form" : NewCommentForm(),
+                    "comments" : comments,
                     "message" : "Bid amount must be higher then starting and current bid"
                 })
 
@@ -172,7 +179,7 @@ def listing(request, listing_id):
         
         comment_form = NewCommentForm(request.POST)
         if comment_form.is_valid():
-            user = comment_form.cleaned_data["user"]
+            user = request.user
             # no need to instantiate listing field as we already have it
             content = comment_form.cleaned_data["content"]
             Comment(user=user, listing=listing, content=content).save()
@@ -184,7 +191,8 @@ def listing(request, listing_id):
                 "watchlist_item" : watchlist_item,
                 "bids" : bids,
                 "highest_bid" : highest_bid,
-                "comment_form" : comment_form
+                "comment_form" : comment_form,
+                "comments" : comments
             })
 
     return render(request, "auctions/listing.html", {
@@ -193,7 +201,8 @@ def listing(request, listing_id):
         "watchlist_item" : watchlist_item,
         "bids" : bids,
         "highest_bid" : highest_bid,
-        "comment_form" : NewCommentForm()
+        "comment_form" : NewCommentForm(),
+        "comments" : comments
     })
 
 @login_required(login_url='login')
