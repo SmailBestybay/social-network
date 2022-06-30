@@ -10,3 +10,9 @@ a.listing {
 .listing-li:hover {
     background-color: rgb(231, 231, 231);
 }
+
+.flex-container {
+    display: flex;
+    margin-top: 2%;
+    margin-left: 5%;
+  }

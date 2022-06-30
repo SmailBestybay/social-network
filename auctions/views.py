@@ -10,16 +10,17 @@ from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
 
+    # enforce list on query to zip two lists later
     listings = list(Listing.objects.all())
+    
     current_prices = []
     for listing in listings:
         _, price = current_price(listing)
         current_prices.append(price)
-
+    
     listings_and_prices = zip(listings, current_prices)
 
     return render(request, "auctions/index.html", {
-        "listings": listings,
         "listings_and_prices" : listings_and_prices
         })
 
@@ -224,9 +225,16 @@ def watchlist(request):
 
     for item in watchlist:
         listings.append(item.listing)
+    
+    current_prices = []
+    for listing in listings:
+        _, price = current_price(listing)
+        current_prices.append(price)
+    
+    listings_and_prices = zip(listings, current_prices)
 
     return render(request, "auctions/watchlist.html", {
-        "listings" : listings
+        "listings_and_prices" : listings_and_prices
     })
 
 def categories(request):
@@ -243,8 +251,16 @@ def categories(request):
     })
 
 def category(request, category_name):
-    listings = Listing.objects.all().filter(category=category_name)
+    listings = list(Listing.objects.all().filter(category=category_name))
+    
+    current_prices = []
+    for listing in listings:
+        _, price = current_price(listing)
+        current_prices.append(price)
+    
+    listings_and_prices = zip(listings, current_prices)
+
     return render(request, "auctions/category.html", {
-        "listings" : listings,
+        "listings_and_prices" : listings_and_prices,
         "category" : category_name.capitalize()
     })
