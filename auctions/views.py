@@ -10,10 +10,17 @@ from django.core.exceptions import ObjectDoesNotExist
 
 def index(request):
 
-    listings = Listing.objects.all()
+    listings = list(Listing.objects.all())
+    current_prices = []
+    for listing in listings:
+        _, price = current_price(listing)
+        current_prices.append(price)
+
+    listings_and_prices = zip(listings, current_prices)
 
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": listings,
+        "listings_and_prices" : listings_and_prices
         })
 
 
@@ -122,11 +129,7 @@ def listing(request, listing_id):
     
     # bid logic
     # all bids on this listing
-    bids = Bid.objects.all().filter(listing=listing)
-    highest_bid = bids.first()
-    for bid in bids:
-        if bid.amount > highest_bid.amount and bid.amount > listing.starting_bid:
-            highest_bid = get_object_or_404(Bid, pk=bid.id)
+    bids, highest_bid = current_price(listing)
 
     # comments logic
     comments = listing.comments.all()
@@ -203,6 +206,15 @@ def listing(request, listing_id):
         "comment_form" : NewCommentForm(),
         "comments" : comments
     })
+
+def current_price(listing):
+    """finds the current highest bid of the listing"""
+    bids = Bid.objects.all().filter(listing=listing)
+    highest_bid = bids.first()
+    for bid in bids:
+        if bid.amount > highest_bid.amount and bid.amount > listing.starting_bid:
+            highest_bid = get_object_or_404(Bid, pk=bid.id)
+    return bids, highest_bid
 
 @login_required(login_url='login')
 def watchlist(request):
