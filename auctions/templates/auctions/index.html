@@ -5,17 +5,22 @@
 
     <ul class="list-group">
         {% for listing in listings %}
-            <li class="list-group-item">    
+            <li class="list-group-item listing-li">    
                 <div class="container mx-1">
-                    <a href="{% url 'listing' listing.id %}">
+                    <a class="listing" href="{% url 'listing' listing.id %}">
                     <div class="row">
                         <div class="col-3">
-                            <img src="{{ listing.image }}" alt="{{ listing.description }}" class="img-thumbnail">
+                            {% if listing.image == "" %}
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930" alt="No Image Available" class="img-thumbnail">
+                            {% else %}
+                                <img src="{{ listing.image }}" alt="{{ listing.description }}" class="img-thumbnail">
+                            {% endif %}
                         </div>
                         <div class="col-9">
                             <h3>{{ listing.title }}</h3>
-                            Description: {{ listing.description }}, 
-                            Starting Bid: {{ listing.starting_bid }}, Owner: {{listing.owner}}
+                            <p>Current Price: </p>
+                            <p>Description: {{ listing.description }}</p> 
+                            <p>Starting Bid: {{ listing.starting_bid }}</p>
                         </div>
                     </div>
                     </a>
