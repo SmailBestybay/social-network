@@ -26,11 +26,22 @@ td>input {
     width: 500px;
   }
 
-.create-button {
-    display: flex;
-    justify-content: center;
+.listing-image>img {
+    max-width: 100%;
+    height: auto;
+
 }
 
-.create-button>input {
-    width: 200px;
+.watchlist-button {
+    margin-bottom: 10px;
+}
+
+.listing-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.05em;
+}
+
+.listing-info>div {
+    padding-bottom: 15px;
 }
