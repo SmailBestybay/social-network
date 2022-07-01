@@ -16,3 +16,21 @@ a.listing {
     margin-top: 2%;
     margin-left: 5%;
   }
+
+th, td {
+    padding-left: 10px;
+    padding-bottom: 5px;
+}
+
+td>input {
+    width: 500px;
+  }
+
+.create-button {
+    display: flex;
+    justify-content: center;
+}
+
+.create-button>input {
+    width: 200px;
+}
