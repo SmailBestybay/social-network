@@ -2,11 +2,7 @@
 
 {% block body %}
     <h2>Listings: {{ listing.title }}</h2>
-
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
-
+    
     {% if user.is_authenticated %}
         <div class="watchlist-button">
             <form action="{% url 'listing' listing.id %}" method="post">
@@ -19,7 +15,14 @@
             </form>
         </div>
     {% endif %}
-    <div class="container py-2">
+    
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    
+    {% comment %} Img and info section {% endcomment %}
+    <div class="container py-2 ml-n1">
         <div class="row">
             <div class="col">
                 <div class="listing-image">
@@ -30,7 +33,6 @@
                     {% endif %}
                 </div>
             </div>
-    
             <div class="col-8">
                 <div class="listing-info pt-1">
                     <div class="font-weight-normal">
@@ -80,24 +82,27 @@
             </div>
         </div>
     </div>
-    
+<hr>
+    {% comment %} Comment section {% endcomment %}
     {% if user.is_authenticated %}
-        
-
-        <div>
-            <form action="{% url 'listing' listing.id %}" method="post">
+        <form action="{% url 'listing' listing.id %}" method="post">
+            <div class="comment-form">
                 {% csrf_token %}
-                {{ comment_form }}
-                <input class="btn btn-primary" type="submit" value="Submit">
-            </form>
-        </div>
+                <div>
+                    {{ comment_form }}
+                </div>
+                <div>
+                    <input class="btn btn-primary btn-block" type="submit" value="Submit">
+                </div>
+            </div>
+        </form>
 
-        <div>
-            {{ comments }}
-            <ul>
+        <div class="posted-comments">
+            <ul class="pl-2">
                 {% for comment in comments %}
                 <li>
-                    {{ comment.user }} commented: {{ comment.content }}
+                    <div class="font-weight-bold mb-0 pt-2">{{ comment.user }}:</div>
+                    <div class="mb-1 ml-2">{{ comment.content }}</div>
                 </li>
                 {% endfor %}
             </ul>

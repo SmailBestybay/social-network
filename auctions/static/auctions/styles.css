@@ -45,3 +45,23 @@ td>input {
 .listing-info>div {
     padding-bottom: 15px;
 }
+.comment-form {
+    width: 50%;
+    margin-top: 5px;
+}
+.comment-form textarea {
+    border-radius: 10px;
+    height: 50px;
+    width: 100%;
+    padding-left: 5px;
+}
+
+.posted-comments li {
+    list-style-type: none;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.342);
+    width: 50%;
+}
+
+.posted-comments div {
+    overflow-wrap: break-word;
+}
