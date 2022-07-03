@@ -4,10 +4,6 @@ from django.core.validators import MinValueValidator
 
 class User(AbstractUser):
     
-    # bids manny to many field as one user can have many bids
-    # bids = models.ManyToManyField(Bid, blank=True, related_name="")
-    # listings many to many relationship as a user can have many listings
-
     def __str__(self):
         return f"{self.username} "
 

@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from .models import User, Listing, Watchlist, Bid, Comment
@@ -90,7 +90,10 @@ def create_listing(request):
             description = form.cleaned_data["description"]
             starting_bid = form.cleaned_data["starting_bid"]
             image = form.cleaned_data["image"]
-            category = form.cleaned_data["category"].lower()
+            if form.cleaned_data["category"] is '':
+                category = "no category"
+            else:
+                category = form.cleaned_data["category"].lower()
             owner = request.user
 
             # instantiate an object of models class
@@ -119,6 +122,8 @@ def create_listing(request):
 def listing(request, listing_id):
 
     listing = get_object_or_404(Listing, pk=listing_id)
+    bids, highest_bid = current_price(listing)
+    comments = listing.comments.all()
 
     # watchlist logic
     try:
@@ -128,13 +133,6 @@ def listing(request, listing_id):
         watchlist_item = None
         watchlisted = False
     
-    # bid logic
-    # all bids on this listing
-    bids, highest_bid = current_price(listing)
-
-    # comments logic
-    comments = listing.comments.all()
-
     if request.method == "POST":
         if "add_or_remove" in request.POST:
             # using get_or_create method in order to avoid saving twice
@@ -174,39 +172,42 @@ def listing(request, listing_id):
 
         if "close_listing" in request.POST:
             listing.closed = True
-            #TODO get bid objects with highest bid
-            bid = get_object_or_404(Bid, pk=request.POST["close_listing"])
-            listing.winner = bid.user
+            if request.POST["close_listing"] != '':
+                bid = get_object_or_404(Bid, pk=request.POST["close_listing"])
+                listing.winner = bid.user
+            
             listing.save()
+
             return redirect("listing", listing.id)
         
-        comment_form = NewCommentForm(request.POST)
-        if comment_form.is_valid():
-            user = request.user
-            # no need to instantiate listing field as we already have it
-            content = comment_form.cleaned_data["content"]
-            Comment(user=user, listing=listing, content=content).save()
-            return redirect("listing", listing.id)
-        else:
-            return render(request, "auctions/listing.html", {
-                "listing" : listing,
-                "watchlisted" : watchlisted,
-                "watchlist_item" : watchlist_item,
-                "bids" : bids,
-                "highest_bid" : highest_bid,
-                "comment_form" : comment_form,
-                "comments" : comments
-            })
-
-    return render(request, "auctions/listing.html", {
-        "listing" : listing,
-        "watchlisted" : watchlisted,
-        "watchlist_item" : watchlist_item,
-        "bids" : bids,
-        "highest_bid" : highest_bid,
-        "comment_form" : NewCommentForm(),
-        "comments" : comments
-    })
+        if "content" in request.POST:
+            comment_form = NewCommentForm(request.POST)
+            if comment_form.is_valid():
+                user = request.user
+                # no need to instantiate listing field as we already have it
+                content = comment_form.cleaned_data["content"]
+                Comment(user=user, listing=listing, content=content).save()
+                return redirect("listing", listing.id)
+            else:
+                return render(request, "auctions/listing.html", {
+                    "listing" : listing,
+                    "watchlisted" : watchlisted,
+                    "watchlist_item" : watchlist_item,
+                    "bids" : bids,
+                    "highest_bid" : highest_bid,
+                    "comment_form" : comment_form,
+                    "comments" : comments
+                    })
+    else:
+        return render(request, "auctions/listing.html", {
+            "listing" : listing,
+            "watchlisted" : watchlisted,
+            "watchlist_item" : watchlist_item,
+            "bids" : bids,
+            "highest_bid" : highest_bid,
+            "comment_form" : NewCommentForm(),
+            "comments" : comments
+        })
 
 def current_price(listing):
     """finds the current highest bid of the listing"""
@@ -238,13 +239,17 @@ def watchlist(request):
     })
 
 def categories(request):
-    # Display list of categories
-    # item in list is link to list of active listings in category
     categories = set()
     listings = Listing.objects.all()
     for listing in listings:
         if listing.category != "":
             categories.add(listing.category)
+    # shallow copy of set to avoid set changed size during iteration error
+    for category in categories.copy():
+        # query each category for active listings.
+        query = Listing.objects.all().filter(closed=False).filter(category=category) 
+        if not query.exists():
+            categories.remove(category)
 
     return render(request, "auctions/categories.html", {
         "categories" : categories
@@ -252,7 +257,6 @@ def categories(request):
 
 def category(request, category_name):
     listings = list(Listing.objects.all().filter(category=category_name))
-    
     current_prices = []
     for listing in listings:
         _, price = current_price(listing)

@@ -36,16 +36,36 @@
             <div class="col-8">
                 <div class="listing-info pt-1">
                     <div class="font-weight-normal">
-                        Description: {{ listing.description }}
+                        <strong>Description:</strong>
+                         {{ listing.description }}
                     </div>
                     <div class="font-weight-normal">
-                        Starting Bid: {{ listing.starting_bid }}
+                        <strong>Starting Bid:</strong>
+                        {{ listing.starting_bid }}
                     </div>
                     <div class="font-weight-normal">
                         {% if highest_bid == None %}
-                            Current Price: {{ listing.starting_bid }}
+                            <strong>Current Price:</strong> 
+                            {{ listing.starting_bid }}
                         {% else %}
-                             Current Price: {{ highest_bid.amount }}
+                             <strong>Current Price:</strong> 
+                             {{ highest_bid.amount }}
+                        {% endif %}
+                    </div>
+                    <div class="font-weight-normal">
+                        <strong>Category:</strong>
+                        {{ listing.category|capfirst }}
+                    </div>
+                    <div class="font-weight-normal">
+                        <strong>Owner:</strong>
+                        {{ listing.owner }}
+                    </div>
+                    <div class="font-weight-normal">
+                        <strong>Status: </strong>
+                        {% if listing.closed %}
+                            Closed
+                        {% else %}
+                            Open
                         {% endif %}
                     </div>
                     {% if user.is_authenticated %}

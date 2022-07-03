@@ -13,6 +13,5 @@ class NewCommentForm(ModelForm):
         # to have no label
         labels = {'content': ''}
         # https://docs.djangoproject.com/en/4.0/topics/forms/modelforms/#modelform
-        widgets = {'content' : Textarea(attrs={'placeholder':'Comment'}),
-            }
+        widgets = {'content' : Textarea(attrs={'placeholder':'Comment'})}
         
