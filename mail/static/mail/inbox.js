@@ -45,6 +45,7 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
+  console.log(`LOADING MAILBOX: ${mailbox}`);
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
@@ -54,12 +55,6 @@ function load_mailbox(mailbox) {
   
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
-
-  // clear old emails before loading new ones
-  const children = document.querySelectorAll('#emails-view > div')
-  children.forEach(child => {
-    child.remove();
-  })
 
   // fetch mailbox
   fetch(`emails/${mailbox}`)
@@ -91,82 +86,98 @@ function load_mailbox(mailbox) {
   });
 }
 
-function get_email(email_id) {
+async function archive_temp() {
+  // await archive_func(email);
+  // load_mailbox('inbox');
+  console.log('CALLED ARCHIVE_TEMP')
+}
+
+async function fetchEmail(email_id) {
+  let response = await fetch(`/emails/${email_id}`);
+  let email = await response.json();
+  return email
+}
+// function to archive or unarchive email 
+async function archive_func(email) {
+  console.log('CLICKED ARCHIVE BUTTON')
+  console.log(`${email.id}, ${email.subject}, archived:${email.archived}`)
+  let archive_param = !email.archived; 
   
+  let result = await fetch(`/emails/${email.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      archived: archive_param
+    })
+  })
+  
+  console.log(result)
+} 
+
+async function get_email(email_id) {
+  
+  // show email view and hide other views
   document.querySelector('#email-view').style.display = 'block';
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
-
+  
   // clear last email before loading again
   const children = document.querySelectorAll('.email-info > span')
   children.forEach(child => {
     child.innerHTML = '';
   })
-
   document.querySelector('#email-body').innerHTML = '';
-
-  fetch(`/emails/${email_id}`)
-  .then(response => response.json())
-  .then(email => {
-    // Print email
-    console.log(email);
-    document.querySelector('#from').innerHTML += `<strong>From:</strong> ${email.sender}`;
-    document.querySelector('#to').innerHTML += `<strong>To:</strong> ${email.recipients}`;
-    document.querySelector('#subject').innerHTML += `<strong>Subject:</strong> ${email.subject}`;
-    document.querySelector('#timestamp').innerHTML += `<strong>Timestamp:</strong> ${email.timestamp}`;
-    document.querySelector('#email-body').innerHTML += ` ${email.body}`;
-    
-    // archive appearance
-    const archive_button = document.querySelector('#archive-unarchive')
-    if (email.archived) {
-       archive_button.innerHTML = 'Unarchive'
-    } else {
-      archive_button.innerHTML = 'Archive'
-    };
-
-    // arrichve button event
-    archive_button.addEventListener('click', () => {
-      if (email.archived) {
-        fetch(`/emails/${email_id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-            archived: false
-          })
-        })
-      } else {
-        fetch(`/emails/${email_id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-            archived: true
-          })
-        })
-      }
-      load_mailbox('inbox');
-    });
-    
-    // reply email event
-    const reply_botton = document.querySelector('#reply');
-    reply_botton.addEventListener('click', () => {
-      console.log(email)
-      // Show compose view and hide other views
-      document.querySelector('#emails-view').style.display = 'none';
-      document.querySelector('#compose-view').style.display = 'block';
-      document.querySelector('#email-view').style.display = 'none';
-      
-      // Clear out composition fields
-      document.querySelector('#compose-recipients').value = email.sender;
-      document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
-      document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: \n${email.body}`;
-    });
-
-  });
   
-  // read
-  fetch(`/emails/${email_id}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-      read: true
-    })
-  })
-}
+  let email = await fetchEmail(email_id);
+  
+  // Render email
+  document.querySelector('#from').innerHTML += `<strong>From:</strong> ${email.sender}`;
+  document.querySelector('#to').innerHTML += `<strong>To:</strong> ${email.recipients}`;
+  document.querySelector('#subject').innerHTML += `<strong>Subject:</strong> ${email.subject}`;
+  document.querySelector('#timestamp').innerHTML += `<strong>Timestamp:</strong> ${email.timestamp}`;
+  document.querySelector('#email-body').innerHTML += ` ${email.body}`;
+  
+  // archive button appearance
+  const archive_button = document.querySelector('#archive-unarchive');
+  if (email.archived) {
+    archive_button.innerHTML = 'Unarchive'
+  } else {
+    archive_button.innerHTML = 'Archive'
+  };
 
+  // remove existing listener on 
+  archive_button.removeEventListener('click', archive_temp);
+  
+  // archive email event
+  console.log(`ADDING EVENT LISTENER FOR EMAIL ${email}`)
+  archive_button.addEventListener('click', archive_temp)
+
+  // reply email event
+  const reply_botton = document.querySelector('#reply');
+  reply_botton.addEventListener('click', () => {
+    console.log(email);
+    // Show compose view and hide other views
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'block';
+    document.querySelector('#email-view').style.display = 'none';
+    
+    // Clear out composition fields
+    document.querySelector('#compose-recipients').value = email.sender;
+    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+    document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: \n${email.body}`;
+  });
+
+  // email read request
+  if (!email.read) {
+    fetch(`/emails/${email.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        read: true
+      })
+    })
+  }
+
+  
+  
+
+  
+}
