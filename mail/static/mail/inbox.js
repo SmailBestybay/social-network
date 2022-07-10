@@ -6,6 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
+  // TODO add event listeners for reply and archive here,
+  // but give email id to these buttons in get email function  
+  // so that we can pass email id to event Handler functions.
+  // declare the eventHandler functions independently
+  document.querySelector('#archive-unarchive').addEventListener('click', archive_email);
+  document.querySelector('#reply').addEventListener('click', reply_email);
+
+
   // By default, load the inbox
   load_mailbox('inbox');
   
@@ -86,32 +94,42 @@ function load_mailbox(mailbox) {
   });
 }
 
-async function archive_temp() {
-  // await archive_func(email);
-  // load_mailbox('inbox');
-  console.log('CALLED ARCHIVE_TEMP')
-}
-
 async function fetchEmail(email_id) {
   let response = await fetch(`/emails/${email_id}`);
   let email = await response.json();
+  window.localStorage.setItem('email', JSON.stringify(email));
   return email
 }
-// function to archive or unarchive email 
-async function archive_func(email) {
-  console.log('CLICKED ARCHIVE BUTTON')
-  console.log(`${email.id}, ${email.subject}, archived:${email.archived}`)
-  let archive_param = !email.archived; 
-  
-  let result = await fetch(`/emails/${email.id}`, {
+
+function stringToBoolean(value){
+  return (String(value).toLowerCase() === 'true');
+}
+
+function archive_email() {
+  fetch(`/emails/${this.dataset.id}`, {
     method: 'PUT',
     body: JSON.stringify({
-      archived: archive_param
+      archived: stringToBoolean(this.dataset.toArchive)
     })
   })
+  .then(load_mailbox('inbox'))
+  .then(window.localStorage.clear());
+}
+
+function reply_email() {
+  console.log('REPLY BUTTON')
+  let email = JSON.parse(window.localStorage.getItem('email'));
+  console.log(email);
+  // Show compose view and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#email-view').style.display = 'none';
   
-  console.log(result)
-} 
+  // Clear out composition fields
+  document.querySelector('#compose-recipients').value = email.sender;
+  document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+  document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: \n${email.body}`;
+}
 
 async function get_email(email_id) {
   
@@ -136,35 +154,16 @@ async function get_email(email_id) {
   document.querySelector('#timestamp').innerHTML += `<strong>Timestamp:</strong> ${email.timestamp}`;
   document.querySelector('#email-body').innerHTML += ` ${email.body}`;
   
-  // archive button appearance
+  // archive button appearance and data setting
   const archive_button = document.querySelector('#archive-unarchive');
   if (email.archived) {
     archive_button.innerHTML = 'Unarchive'
+    archive_button.dataset.toArchive = false
   } else {
     archive_button.innerHTML = 'Archive'
+    archive_button.dataset.toArchive = true
   };
-
-  // remove existing listener on 
-  archive_button.removeEventListener('click', archive_temp);
-  
-  // archive email event
-  console.log(`ADDING EVENT LISTENER FOR EMAIL ${email}`)
-  archive_button.addEventListener('click', archive_temp)
-
-  // reply email event
-  const reply_botton = document.querySelector('#reply');
-  reply_botton.addEventListener('click', () => {
-    console.log(email);
-    // Show compose view and hide other views
-    document.querySelector('#emails-view').style.display = 'none';
-    document.querySelector('#compose-view').style.display = 'block';
-    document.querySelector('#email-view').style.display = 'none';
-    
-    // Clear out composition fields
-    document.querySelector('#compose-recipients').value = email.sender;
-    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
-    document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: \n${email.body}`;
-  });
+  archive_button.dataset.id = email_id;
 
   // email read request
   if (!email.read) {
@@ -175,9 +174,4 @@ async function get_email(email_id) {
       })
     })
   }
-
-  
-  
-
-  
 }
