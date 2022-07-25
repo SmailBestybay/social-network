@@ -24,3 +24,6 @@ class UserFollowing(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user} is following {self.following_user}"
+    
+    def is_valid_follow(self) -> bool:
+        return self.user != self.following_user
