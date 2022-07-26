@@ -1,15 +1,40 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views import generic
+from django.contrib.auth.decorators import login_required
+import json
+from .models import User, Post
 
-from .models import User
 
+class IndexView(generic.ListView):
+    template_name = "network/index.html"
+    context_object_name = "posts"
 
-def index(request):
-    return render(request, "network/index.html")
+    def get_queryset(self):
+        """Return all posts in reverse chronological order"""
+        return Post.objects.order_by("-created_on")
 
+@login_required
+def make_post(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    data = json.loads(request.body)
+    if data.get("content") == "":
+        return JsonResponse({
+            "error": "Post must have content"
+        }, status=400)
+    
+    new_post = Post(
+        user=request.user,
+        content=data.get("content")
+    )
+    new_post.save()
+
+    return JsonResponse({"message": "Post made successfully."}, status=201)
 
 def login_view(request):
     if request.method == "POST":

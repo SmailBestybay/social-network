@@ -1,29 +1,56 @@
-from django.test import TestCase
-from .models import User, UserFollowing
+from django.test import TestCase, Client
+from .models import User, Post, UserFollowing
+from django.urls import reverse
+import json
+from django.forms.models import model_to_dict
 
 # Create your tests here.
+# https://www.youtube.com/watch?v=hA_VxnxCHbo&ab_channel=TheDumbfounds
+# https://docs.djangoproject.com/en/4.0/topics/testing/tools/
 
-class FollowTestCase(TestCase):
+
+class NetworkTestCase(TestCase):
+    
     def setUp(self) -> None:
         
         # Create Users
-        u1 = User.objects.create_user('john')
-        u2 = User.objects.create_user('paul')
+        User.objects.create_user('john', 'john@eagles.com', 'johnpassword')
+        User.objects.create_user('paul', 'paul@eagles.com', 'paulpassword')
         
-        # Create UserFollowing
+        # Get Users
+        self.u1 = User.objects.get(username='john')
+        self.u2 = User.objects.get(username='paul')
 
-        # valid
-        f1 = UserFollowing.objects.create(user=u1, following_user=u2)
-        # invalid
-        f2 = UserFollowing.objects.create(user=u1, following_user=u1)
-    
+        # Create Post
+        Post.objects.create(user=self.u1, content="Test contents")
+
+        # Create valid and invalid UserFollowing
+        UserFollowing.objects.create(user=self.u1, following_user=self.u2)
+        UserFollowing.objects.create(user=self.u1, following_user=self.u1)
+
+
     def test_valid_user_following(self):
-        u1 = User.objects.get(username='john')
-        u2 = User.objects.get(username='paul')
-        f1 = UserFollowing.objects.get(user=u1, following_user=u2)
+        f1 = UserFollowing.objects.get(user=self.u1, following_user=self.u2)
         self.assertTrue(f1.is_valid_follow())
 
     def test_invalid_user_following(self):
-        u1 = User.objects.get(username='john')
-        f1 = UserFollowing.objects.get(user=u1, following_user=u1)
+        f1 = UserFollowing.objects.get(user=self.u1, following_user=self.u1)
         self.assertFalse(f1.is_valid_follow())
+
+    def test_valid_post_like_count(self):
+        p1 = Post.objects.get(user=self.u1)
+        self.assertGreaterEqual(p1.likes, 0)
+
+    def test_invalid_post_like_count(self):
+        p1 = Post.objects.get(user=self.u1)
+        p1.likes = -1
+        self.assertLess(p1.likes, 0)
+
+    def test_make_post(self):
+        dict_user = model_to_dict(self.u1)
+        response = self.client.post(reverse('make_post'), json.dumps({
+            'user': dict_user,
+            'content': 'Lorem Ipsum'
+        }))
+        self.assertEqual(response.status_code, 201)
+

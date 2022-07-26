@@ -7,4 +7,4 @@ admin.site.register(UserFollowing)
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('user', 'content', 'likes')
+    list_display = ('user', 'content', 'likes', 'created_on')
