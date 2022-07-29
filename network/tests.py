@@ -47,10 +47,10 @@ class NetworkTestCase(TestCase):
         self.assertLess(p1.likes, 0)
 
     def test_make_post(self):
-        dict_user = model_to_dict(self.u1)
-        response = self.client.post(reverse('make_post'), json.dumps({
-            'user': dict_user,
-            'content': 'Lorem Ipsum'
-        }))
+        self.client.login(username='john', password='johnpassword')
+        content = {"content" : 'Lorem Ipsum',}
+        response = self.client.post(reverse('make_post'), content, content_type='application/json')
+        sent_post = Post.objects.get(user=self.u1, content='Lorem Ipsum')
+        self.assertEqual(content['content'], sent_post.content)
         self.assertEqual(response.status_code, 201)
 
