@@ -7,7 +7,7 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 import json
 from .models import User, Post
-
+from django.views.decorators.csrf import csrf_exempt
 
 class IndexView(generic.ListView):
     template_name = "network/index.html"
@@ -17,6 +17,7 @@ class IndexView(generic.ListView):
         """Return all posts in reverse chronological order"""
         return Post.objects.order_by("-created_on")
 
+@csrf_exempt
 @login_required
 def make_post(request):
     if request.method != "POST":
@@ -24,9 +25,7 @@ def make_post(request):
 
     data = json.loads(request.body)
     if data.get("content") == "":
-        return JsonResponse({
-            "error": "Post must have content"
-        }, status=400)
+        return JsonResponse({"error": "Post must have content"}, status=400)
     
     new_post = Post(
         user=request.user,

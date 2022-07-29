@@ -14,15 +14,15 @@ class NetworkTestCase(TestCase):
     def setUp(self) -> None:
         
         # Create Users
-        User.objects.create_user('john', 'john@eagles.com', 'johnpassword')
-        User.objects.create_user('paul', 'paul@eagles.com', 'paulpassword')
+        User.objects.create_user('john', 'john@eagles.com', 'johnpassword').save()
+        User.objects.create_user('paul', 'paul@eagles.com', 'paulpassword').save()
         
         # Get Users
         self.u1 = User.objects.get(username='john')
         self.u2 = User.objects.get(username='paul')
 
         # Create Post
-        Post.objects.create(user=self.u1, content="Test contents")
+        Post.objects.create(user=self.u1, content="Test contents").save()
 
         # Create valid and invalid UserFollowing
         UserFollowing.objects.create(user=self.u1, following_user=self.u2)
