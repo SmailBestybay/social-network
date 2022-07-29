@@ -3,7 +3,7 @@
 {% block body %}
     <h1>All Posts</h1>
     {% if user.is_authenticated %}
-        <div class="p-1 m-1 border">
+        <div class="post-div">
             <h2>New Post</h2>
             <div class="form-group">
                 <form>
@@ -13,12 +13,5 @@
             </div>
         </div>
     {% endif %}
-    {% for post in posts  %}
-        <div class="p-1 m-1 border">
-            <p>User: {{ post.user}}</p>
-            <p class="border">Content: {{ post.content}}</p>
-            <p>{{ post.created_on}}</p>
-            <p>Likes: {{ post.likes}}</p>
-        </div>
-    {% endfor %}
+    <div id="posts"></div>
 {% endblock %}

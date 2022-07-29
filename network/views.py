@@ -15,7 +15,15 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return all posts in reverse chronological order"""
-        return Post.objects.order_by("-created_on")
+        return Post.objects.order_by("-timestamp")
+
+def get_posts(request):
+
+    posts = Post.objects.all().order_by("-timestamp")
+    
+    # return JsonResponse({'message': 'found get posts'})
+    return JsonResponse([post.serialize() for post in posts], safe=False)
+
 
 @csrf_exempt
 @login_required

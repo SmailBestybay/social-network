@@ -10,11 +10,20 @@ class User(AbstractUser):
 class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     content = models.TextField(blank=False)
-    created_on = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f"User: {self.user}, Short Content: {self.content[:20]}..."
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user": self.user.username,
+            "content": self.content,
+            "timestamp": self.timestamp,
+            "likes": self.likes
+        }
 
 class UserFollowing(models.Model):
     """ Don't forget to block from following the same user twice """
