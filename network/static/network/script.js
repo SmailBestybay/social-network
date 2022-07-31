@@ -35,6 +35,8 @@ async function get_posts() {
     if (response.ok) {
         const result = await response.json()
         document.querySelector('#posts').innerHTML = ''
+        // trying to use results outside of the async function returns a promise.
+        // to use it outside of this funcition, use .then() at the function call.
         result.forEach(element => {
             create_post_div(element)
         });
