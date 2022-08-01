@@ -6,12 +6,22 @@
         <div class="post-div">
             <h2>New Post</h2>
             <div class="form-group">
-                <form>
-                    <textarea class="form-control mb-2" id="new-content" rows="3"></textarea>
+                <form action="{% url 'index' %}" method="POST">
+                    {% csrf_token %}
+                    <textarea class="form-control mb-2" id="new-content" name="content" rows="3"></textarea>
                     <input class="btn btn-primary mb-2" id="post-button" value="Post"></input>
                 </form>
             </div>
         </div>
     {% endif %}
-    <div id="posts"></div>
+    <div id="posts">
+        {% for post in posts %}
+            <div class="post-div" id="{{ post.id }}">
+                <p>User: {{ post.user}}</p>
+                <p class="border">Content: {{ post.content }}</p>
+                <p> {{ post.timestamp }}</p>
+                <p> Likes: {{ post.likes }}</p>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
