@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // get_posts()
     
-    // new post button
+    // new post button and enter key listeners
     document.querySelector('#post-button').addEventListener('click', make_post);
     document.querySelector('#new-content').onkeypress = (event) => {
         if (!event.shiftKey) {

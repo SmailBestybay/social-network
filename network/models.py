@@ -16,15 +16,6 @@ class Post(models.Model):
     def __str__(self) -> str:
         return f"User: {self.user}, Short Content: {self.content[:20]}..."
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "user": self.user.username,
-            "content": self.content,
-            "timestamp": self.timestamp.strftime('%d %B, %Y  %H:%M'),
-            "likes": self.likes
-        }
-
 class UserFollowing(models.Model):
     """ Don't forget to block from following the same user twice """
 
