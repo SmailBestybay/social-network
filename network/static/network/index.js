@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // get_posts()
-    
     // new post button and enter key listeners
     document.querySelector('#post-button').addEventListener('click', make_post);
     document.querySelector('#new-content').onkeypress = (event) => {
@@ -12,62 +10,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const edit_buttons = document.querySelectorAll('#edit_post');
+    edit_buttons.forEach(button => button.addEventListener('click', edit_post));
+
+
 });
 
 function make_post() {
     document.querySelector('form').submit();
 }
 
-// async function make_post() {
-//     const post_content = document.querySelector('#new-content');
-//     const response = await fetch('/make_post', {
-//         method: 'POST',
-//         body: JSON.stringify({
-//             content: post_content.value
-//         })
-//     });
-//     const result = await response.json();
-//     console.log(result);
-//     post_content.value = "";
-//     get_posts();
-//     return false;
-// };
+function edit_post(event) {
+    const post_div = event.target.parentElement;
+    const content = post_div.querySelector('#content');
+    const text_area = document.createElement('textarea');
+    text_area.innerHTML = content.innerHTML;
+    content.innerHTML = '';
+    content.append(text_area);
 
-// async function get_posts() {
-//     const response = await fetch('get_posts');
-//     if (response.ok) {
-//         const result = await response.json()
-//         document.querySelector('#posts').innerHTML = ''
-//         // trying to use results outside of the async function returns a promise.
-//         // to use it outside of this funcition, use .then() at the function call.
-//         result.forEach(element => {
-//             create_post_div(element)
-//         });
-//         return result
-//     }
-// }
+    const save_button = document.createElement('button');
+    save_button.setAttribute('class' , 'btn btn-outline-primary mb-2')
+    save_button.innerHTML = 'Save';
+    const edit_button = event.target;
 
-// function create_post_div(post) {
-//     const newDiv = document.createElement('div')
-//     newDiv.setAttribute('id', post.id)
-//     newDiv.setAttribute('class', 'post-div')
+    save_button.addEventListener('click', (event) => {
 
-//     const pUser = document.createElement('p')
-//     pUser.innerHTML = `User: ${post.user}`
+        if (!text_area.value) {
+            alert('Post must not be empty')
+        } else {
+            content.innerHTML = text_area.value;
+            text_area.remove();
+            save_button.replaceWith(edit_button);
+            fetch(`update_post/${post_div.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    content: text_area.value
+                })
+            });
+        }
+    });
 
-//     const pContent = document.createElement('p')
-//     pContent.setAttribute('class', 'border')
-//     pContent.innerHTML = `Content: ${post.content}`
+    event.target.replaceWith(save_button);
 
-//     const pTimestamp = document.createElement('p')
-//     pTimestamp.innerHTML= `${post.timestamp}`
-
-//     const pLikes = document.createElement('p')
-//     pLikes.innerHTML = `Likes: ${post.likes}`
-
-//     newDiv.appendChild(pUser)
-//     newDiv.appendChild(pContent)
-//     newDiv.appendChild(pTimestamp)
-//     newDiv.appendChild(pLikes)
-//     document.querySelector('#posts').appendChild(newDiv)
-// }
+}

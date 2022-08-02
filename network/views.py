@@ -5,6 +5,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from .models import User, Post
 from django.core.paginator import Paginator
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 def index_view(request):
 
@@ -28,6 +30,24 @@ def index_view(request):
         return render(request, 'network/index.html', context)
             
     return render(request, 'network/index.html', context)
+
+@csrf_exempt
+def update_post(request, post_id):
+    if request.method != "PUT":
+        return JsonResponse({'error': "Put request required"}, status=400)
+    
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({'error': 'Post not found'}, status=404)
+
+    data = json.loads(request.body)
+    if data["content"] == '':
+        return JsonResponse({'error': 'Post must not be empty'})
+    
+    post.content = data['content']
+    post.save()
+    return JsonResponse({'message': "put success"})
 
 def login_view(request):
     if request.method == "POST":

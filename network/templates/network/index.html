@@ -21,7 +21,10 @@
         {% for post in page_obj %}
             <div class="post-div" id="{{ post.id }}">
                 <p>User: {{ post.user}}</p>
-                <p class="border">Content: {{ post.content }}</p>
+                {% if post.user == user %}
+                    <button type="button" class="btn btn-outline-primary mb-2" id="edit_post">Edit</button>
+                {% endif %}
+                <p id="content">{{ post.content }}</p>
                 <p> {{ post.timestamp }}</p>
                 <p> Likes: {{ post.likes }}</p>
             </div>

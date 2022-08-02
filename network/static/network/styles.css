@@ -12,3 +12,8 @@
     padding: 1rem;
     margin: 1rem;
 }
+
+#content textarea {
+    border-radius: 0.3rem;
+    width: 100%;
+}
