@@ -1,5 +1,4 @@
-from urllib import response
-from django.test import TestCase, Client
+from django.test import TestCase
 from network.models import User, Post
 from django.urls import reverse
 
@@ -32,10 +31,14 @@ class ViewsTest(TestCase):
         self.assertEqual(response.status_code, 400)
     
     def test_valid_post_update(self):
-        self.client.login(username='john', password='jognpassword')
+        self.client.login(username='john', password='johnpassword')
         post = Post.objects.get(user=self.u1)
         content = {'content': 'Lorem Ipsum'}
         response = self.client.put(reverse('update_post', args=(post.id,)), content, content_type='application/json')
+        # print('##################')
+        # print(response.context['user'].id, response.context['user'].username)
+        # print(response.context)
+        # print('##################')
         self.assertEqual(response.status_code, 200)
         
     def test_invalid_post_update(self):
@@ -45,13 +48,9 @@ class ViewsTest(TestCase):
         response = self.client.put(reverse('update_post', args=(post.id,)), content, content_type='application/json')
         self.assertEqual(response.status_code, 400)
     
-    def test_user_post_update_on_other_users_post(self):
-        c = Client()
-        c.login(username='paul', password='paulpassword')
-        response = c.get(reverse('index'))
-        print('##################')
-        print(response.context['user'].id)
-        print('##################')
+    def test_invalid_user_post_update_on_other_users_post(self):
+        self.client.login(username='paul', password='paulpassword')
         post = Post.objects.get(user=self.u1)
         content = {'content': 'Lorem Ipsum'}
-        # response = self.client.put(reverse('update_post', args=(post.id,)), content, content_type='application/json')
+        response = self.client.put(reverse('update_post', args=(post.id,)), content, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
