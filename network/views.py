@@ -19,7 +19,7 @@ def index_view(request):
     if request.method == 'POST':
         if request.POST['content'].strip() == '':
             context['message'] = 'Post must not be empty'
-            return render(request, 'network/index.html', context)
+            return render(request, 'network/index.html', context, status=400)
         
         new_post = Post(
             user=request.user,
@@ -43,8 +43,11 @@ def update_post(request, post_id):
 
     data = json.loads(request.body)
     if data["content"] == '':
-        return JsonResponse({'error': 'Post must not be empty'})
+        return JsonResponse({'error': 'Post must not be empty'}, status=400)
     
+    if post.user != request.user:
+        return JsonResponse({'error': "Can not edit other user's posts"}, status=400)
+        
     post.content = data['content']
     post.save()
     return JsonResponse({'message': "put success"})
