@@ -1,15 +1,12 @@
-from django.test import TestCase, Client
-from .models import User, Post, UserFollowing
-from django.urls import reverse
-import json
-from django.forms.models import model_to_dict
+from django.test import TestCase
+from network.models import User, Post, UserFollowing
 
 # Create your tests here.
 # https://www.youtube.com/watch?v=hA_VxnxCHbo&ab_channel=TheDumbfounds
 # https://docs.djangoproject.com/en/4.0/topics/testing/tools/
 
 
-class NetworkTestCase(TestCase):
+class ModelsTest(TestCase):
     
     def setUp(self) -> None:
         
@@ -39,18 +36,12 @@ class NetworkTestCase(TestCase):
 
     def test_valid_post_like_count(self):
         p1 = Post.objects.get(user=self.u1)
-        self.assertGreaterEqual(p1.likes, 0)
+        self.assertGreaterEqual(0, p1.likes)
 
     def test_invalid_post_like_count(self):
         p1 = Post.objects.get(user=self.u1)
         p1.likes = -1
         self.assertLess(p1.likes, 0)
 
-    def test_make_post(self):
-        self.client.login(username='john', password='johnpassword')
-        content = {"content" : 'Lorem Ipsum',}
-        response = self.client.post(reverse('make_post'), content, content_type='application/json')
-        sent_post = Post.objects.get(user=self.u1, content='Lorem Ipsum')
-        self.assertEqual(content['content'], sent_post.content)
-        self.assertEqual(response.status_code, 201)
+    
 
