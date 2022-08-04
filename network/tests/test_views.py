@@ -54,3 +54,8 @@ class ViewsTest(TestCase):
         content = {'content': 'Lorem Ipsum'}
         response = self.client.put(reverse('update_post', args=(post.id,)), content, content_type='application/json')
         self.assertEqual(response.status_code, 400)
+    
+    def test_profile_view(self):
+        self.client.login(username='john', password='johnpassword')
+        response = self.client.get(reverse('profile'))
+        self.assertTemplateUsed(response, 'network/profile.html')

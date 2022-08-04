@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from .models import User, Post
+from .models import User, Post, UserFollowing
 from django.core.paginator import Paginator
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 def index_view(request):
 
     posts = Post.objects.all().order_by('-timestamp')
-    paginator = Paginator(posts, 10) # Show 10 contacts per page.
+    paginator = Paginator(posts, 10) # Show 10 posts per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {'posts' : posts, 'page_obj' : page_obj}
@@ -31,14 +31,22 @@ def index_view(request):
             
     return render(request, 'network/index.html', context)
 
-def profile_view(request):
-    user = request.user
+def profile_view(request, username):
+    user = User.objects.get(username=username)
+    followers = user.followers.count()
+    following = user.following.count()
 
     posts = Post.objects.all().filter(user=user).order_by('-timestamp')
-    paginator = Paginator(posts, 10) # Show 10 contacts per page.
+    paginator = Paginator(posts, 10) # Show 10 posts per page.
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    context = {'posts' : posts, 'page_obj' : page_obj}
+
+    context = {'posts' : posts,
+                'page_obj' : page_obj,
+                'followers': followers,
+                'following': following,
+                'user_profile': user
+            }
 
     return render(request, 'network/profile.html', context)
 

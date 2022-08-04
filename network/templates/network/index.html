@@ -7,14 +7,12 @@
 
 {% block page_title %}
     <h1>All Posts</h1>
+    {{ block.super }}
 {% endblock page_title %}
 {% block form_section %}
     {% if user.is_authenticated %}
         <div class="post-div">
             <h2>New Post</h2>
-            {% if message %}
-                <p>{{ message }}</p>
-            {% endif %}
             <div class="form-group">
                 <form action="{% url 'index' %}" method="POST">
                     {% csrf_token %}

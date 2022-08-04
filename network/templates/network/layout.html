@@ -19,7 +19,7 @@
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile' %}"><strong>{{ user.username }}</strong></a>
+                        <a class="nav-link" href="{% url 'profile' user.username %}"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -45,15 +45,20 @@
           </nav>
         
         <div class="body">
-            {% block page_title %}{% endblock page_title %}
-            {% block form_section %}
-            {% endblock %}
+            {% block page_title %}
+                {% if message %}
+                    <p class="message">{{ message }}</p>
+                {% endif %}
+            {% endblock page_title %}
+
+            {% block user_info %}{% endblock user_info %}
+            {% block form_section %}{% endblock form_section%}
 
             {% block posts %}
                 <div id="posts">
                     {% for post in page_obj %}
                         <div class="post-div" id="{{ post.id }}">
-                            <p>User: {{ post.user}}</p>
+                            <p>User: <a href="{% url 'profile' post.user %}">{{ post.user}}</a></p>
                             {% if post.user == user %}
                                 <button type="button" class="btn btn-outline-primary mb-2" id="edit_post">Edit</button>
                             {% endif %}

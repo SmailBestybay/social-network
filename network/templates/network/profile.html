@@ -1,7 +1,22 @@
 {% extends "network/layout.html" %}
 {% load static %}
 
+{% block js %}
+    <script type="module" src="{% static 'network/js/profile.js' %}"></script>    
+{% endblock %}
 
 {% block page_title %}
-    <h1>Profile Page</h1>
+    <h1>{{ user_profile.username | capfirst }}'s Profile Page</h1>
+    {{ block.super }}
 {% endblock page_title %}
+
+{% block user_info %}
+    <div class="user_info">
+        <div>
+            Followers: {{ followers }}
+        </div>
+        <div>
+            Following: {{ following }}
+        </div>
+    </div>
+{% endblock user_info %}
