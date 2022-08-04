@@ -31,6 +31,17 @@ def index_view(request):
             
     return render(request, 'network/index.html', context)
 
+def profile_view(request):
+    user = request.user
+
+    posts = Post.objects.all().filter(user=user).order_by('-timestamp')
+    paginator = Paginator(posts, 10) # Show 10 contacts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {'posts' : posts, 'page_obj' : page_obj}
+
+    return render(request, 'network/profile.html', context)
+
 @csrf_exempt
 def update_post(request, post_id):
     if request.method != "PUT":

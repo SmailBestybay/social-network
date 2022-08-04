@@ -1,26 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // new post button and enter key listeners
-    document.querySelector('#post-button').addEventListener('click', make_post);
-    document.querySelector('#new-content').onkeypress = (event) => {
-        if (!event.shiftKey) {
-            if (event.code === 'Enter') {
-                make_post()
-            }
-        }
-    };
-
-    const edit_buttons = document.querySelectorAll('#edit_post');
-    edit_buttons.forEach(button => button.addEventListener('click', edit_post));
-
-
-});
-
-function make_post() {
+export function make_post() {
     document.querySelector('form').submit();
 }
 
-function edit_post(event) {
+export function edit_post(event) {
     const post_div = event.target.parentElement;
     const content = post_div.querySelector('#content');
     const text_area = document.createElement('textarea');
@@ -51,5 +33,4 @@ function edit_post(event) {
     });
 
     event.target.replaceWith(save_button);
-
 }

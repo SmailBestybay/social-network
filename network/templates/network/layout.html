@@ -6,17 +6,20 @@
         <title>{% block title %}Social Network{% endblock %}</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+        <script type="module" src="{% static 'network/js/funcs.js' %}"></script>
+        {% block js %} {% endblock %}
+        
     </head>
     <body>
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Network</a>
+            <a class="navbar-brand" href="{% url 'index' %}">Network</a>
           
             <div>
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                        <a class="nav-link" href="{% url 'profile' %}"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -42,9 +45,39 @@
           </nav>
         
         <div class="body">
-            {% block body %}
+            {% block page_title %}{% endblock page_title %}
+            {% block form_section %}
             {% endblock %}
+
+            {% block posts %}
+                <div id="posts">
+                    {% for post in page_obj %}
+                        <div class="post-div" id="{{ post.id }}">
+                            <p>User: {{ post.user}}</p>
+                            {% if post.user == user %}
+                                <button type="button" class="btn btn-outline-primary mb-2" id="edit_post">Edit</button>
+                            {% endif %}
+                            <p id="content">{{ post.content }}</p>
+                            <p> {{ post.timestamp }}</p>
+                            <p> Likes: {{ post.likes }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endblock posts %}
+
+            {% block pagination %}
+                <nav aria-label="Posts pages">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+                        {% endif %}
+                
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endblock pagination %}
         </div>
     </body>
-    <script src="{% static 'network/index.js' %}"></script>
 </html>
