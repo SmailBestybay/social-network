@@ -13,10 +13,22 @@
 {% block user_info %}
     <div class="user_info">
         <div>
-            Followers: {{ followers }}
+            Followers: {{ followers | length }}
         </div>
         <div>
             Following: {{ following }}
         </div>
     </div>
+
+    {% if user_profile != user and  user.is_authenticated%}
+        <div class="follow">
+                <form action="{% url 'follow_unfollow' %}" method="POST">{% csrf_token %}
+                {% if is_following %}
+                    <button type="submit" class="btn btn-outline-primary mb-2" name="unfollow" value="{{ user_profile }}">Unfollow</button>
+                {% else %}
+                    <button type="submit" class="btn btn-outline-primary mb-2" name="follow" value="{{ user_profile }}">Follow</button>
+                {% endif %}
+                </form>
+        </div>
+    {% endif %}
 {% endblock user_info %}

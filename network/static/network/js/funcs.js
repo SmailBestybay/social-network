@@ -23,7 +23,7 @@ export function edit_post(event) {
             content.innerHTML = text_area.value;
             text_area.remove();
             save_button.replaceWith(edit_button);
-            fetch(`update_post/${post_div.id}`, {
+            fetch(`/update_post/${post_div.id}`, {
                 method: 'PUT',
                 body: JSON.stringify({
                     content: text_area.value

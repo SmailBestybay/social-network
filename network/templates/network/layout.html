@@ -27,7 +27,7 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Following</a>
+                        <a class="nav-link" href="{% url 'following' %}">Following</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
@@ -45,6 +45,7 @@
           </nav>
         
         <div class="body">
+            {% block body %}{% endblock body %}
             {% block page_title %}
                 {% if message %}
                     <p class="message">{{ message }}</p>
@@ -58,7 +59,7 @@
                 <div id="posts">
                     {% for post in page_obj %}
                         <div class="post-div" id="{{ post.id }}">
-                            <p>User: <a href="{% url 'profile' post.user %}">{{ post.user}}</a></p>
+                            <p><a href="{% url 'profile' post.user %}">{{ post.user}}</a></p>
                             {% if post.user == user %}
                                 <button type="button" class="btn btn-outline-primary mb-2" id="edit_post">Edit</button>
                             {% endif %}
