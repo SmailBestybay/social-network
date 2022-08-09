@@ -38,6 +38,7 @@ export function edit_post(event) {
 export function like_unlike(event) {
     const liked = event.target.dataset['liked']
     event.target.classList.toggle("fa-thumbs-down");
+    
     if (liked) {
         console.log(liked)
     } 

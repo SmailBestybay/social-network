@@ -66,17 +66,15 @@
                             {% endif %}
                             <p id="content">{{ post.content }}</p>
                             <p> {{ post.timestamp }}</p>
-                            {% if like %}
+                            {% if user in post.get_users_that_liked %}
                                 <div>
-                                    <i id="like" data-liked="true" class="fa fa-thumbs-down"></i>
-                                    {% comment %} <img src="{% static 'network/icons/heart-fill.svg' %}" alt="Heart"> {% endcomment %}
-                                    <span >Unlike {{ post.get_likes }}</span>
+                                    <i id="like" data-liked="true" class="fa fa-thumbs-up fa-thumbs-down"></i>
+                                    <span >Unlike {{ post.get_likes | length }}</span>
                                 </div>
                             {% else %}
                                 <div>
                                     <i id="like" data-liked="false" class="fa fa-thumbs-up"></i>
-                                    {% comment %} <img  src="{% static 'network/icons/heart.svg' %}" alt="Heart"> {% endcomment %}
-                                    <span>Like {{ post.get_likes }}</span>
+                                    <span>Like {{ post.get_likes | length }}</span>
                                 </div>
                             {% endif %}
                         </div>

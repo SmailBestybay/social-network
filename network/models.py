@@ -12,8 +12,18 @@ class Post(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def get_likes(self):
-        """ Get count of likes """
-        return self.likes.count()
+        """ Get likes """
+        return self.likes.all()
+    
+    def get_users_that_liked(self):
+        """ Get a list of users that like the post"""
+        users = []
+        likes = self.likes.all()
+
+        for like in list(likes):
+            users.append(like.user)
+
+        return users
 
     def __str__(self) -> str:
         return f"User: {self.user}, Short Content: {self.content[:20]}..."
