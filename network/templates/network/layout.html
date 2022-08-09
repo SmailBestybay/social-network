@@ -4,6 +4,7 @@
 <html lang="en">
     <head>
         <title>{% block title %}Social Network{% endblock %}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="{% static 'network/styles.css' %}" rel="stylesheet">
         <script type="module" src="{% static 'network/js/funcs.js' %}"></script>
@@ -66,13 +67,15 @@
                             <p id="content">{{ post.content }}</p>
                             <p> {{ post.timestamp }}</p>
                             {% if like %}
-                                <div id="like" data-liked="true">
-                                    <img src="{% static 'network/icons/heart-fill.svg' %}" alt="Heart">
+                                <div>
+                                    <i id="like" data-liked="true" class="fa fa-thumbs-down"></i>
+                                    {% comment %} <img src="{% static 'network/icons/heart-fill.svg' %}" alt="Heart"> {% endcomment %}
                                     <span >Unlike {{ post.get_likes }}</span>
                                 </div>
                             {% else %}
-                                <div id="like" data-liked="false">
-                                    <img src="{% static 'network/icons/heart.svg' %}" alt="Heart">
+                                <div>
+                                    <i id="like" data-liked="false" class="fa fa-thumbs-up"></i>
+                                    {% comment %} <img  src="{% static 'network/icons/heart.svg' %}" alt="Heart"> {% endcomment %}
                                     <span>Like {{ post.get_likes }}</span>
                                 </div>
                             {% endif %}

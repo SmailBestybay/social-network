@@ -17,6 +17,7 @@ def index_view(request):
     page_obj = paginator.get_page(page_number)
     context = {'posts' : posts, 'page_obj' : page_obj}
 
+
     if request.method == 'POST':
         if request.POST['content'].strip() == '':
             context['message'] = 'Post must not be empty'

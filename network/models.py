@@ -5,8 +5,6 @@ from django.db import models
 
 class User(AbstractUser):
     pass
-    # def __str__(self) -> str:
-    #     return f"{self.username}"
 
 class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
