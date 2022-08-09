@@ -68,12 +68,12 @@
                             {% if like %}
                                 <div id="like" data-liked="true">
                                     <img src="{% static 'network/icons/heart-fill.svg' %}" alt="Heart">
-                                    <span >Unlike {{ post.likes | length }}</span>
+                                    <span >Unlike {{ post.get_likes }}</span>
                                 </div>
                             {% else %}
                                 <div id="like" data-liked="false">
                                     <img src="{% static 'network/icons/heart.svg' %}" alt="Heart">
-                                    <span>Like {{ post.likes | length }}</span>
+                                    <span>Like {{ post.get_likes }}</span>
                                 </div>
                             {% endif %}
                         </div>
