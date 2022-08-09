@@ -12,11 +12,13 @@ class Post(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
     content = models.TextField(blank=False)
     timestamp = models.DateTimeField(auto_now_add=True)
-    likes = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f"User: {self.user}, Short Content: {self.content[:20]}..."
 
+class Like(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="likes")
 
 class UserFollowing(models.Model):
     """ Don't forget to block from following the same user twice """
