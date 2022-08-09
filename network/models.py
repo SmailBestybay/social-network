@@ -1,3 +1,4 @@
+from tkinter import CASCADE
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -15,6 +16,7 @@ class Post(models.Model):
 
     def __str__(self) -> str:
         return f"User: {self.user}, Short Content: {self.content[:20]}..."
+
 
 class UserFollowing(models.Model):
     """ Don't forget to block from following the same user twice """

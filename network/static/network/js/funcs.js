@@ -34,3 +34,13 @@ export function edit_post(event) {
 
     event.target.replaceWith(save_button);
 }
+
+export function like_unlike(event) {
+    const liked = event.target.dataset['liked']
+    if (liked) {
+        console.log(liked)
+    } 
+    else if (liked) {
+        console.log(liked)
+    }
+}

@@ -92,6 +92,7 @@ def profile_view(request, username):
 
     return render(request, 'network/profile.html', context)
 
+@login_required
 def follow_unfollow(request):
 
     if request.method != "POST":

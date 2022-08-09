@@ -57,5 +57,5 @@ class ViewsTest(TestCase):
     
     def test_profile_view(self):
         self.client.login(username='john', password='johnpassword')
-        response = self.client.get(reverse('profile'))
+        response = self.client.get(reverse('profile', args=('john',)))
         self.assertTemplateUsed(response, 'network/profile.html')

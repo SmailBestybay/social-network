@@ -1,4 +1,4 @@
-import {make_post, edit_post} from './funcs.js';
+import {make_post, edit_post, like_unlike} from './funcs.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -15,5 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const edit_buttons = document.querySelectorAll('#edit_post');
     edit_buttons.forEach(button => button.addEventListener('click', edit_post));
 
-
+    const like_action = document.querySelectorAll('#like');
+    like_action.forEach(button => button.addEventListener('click', like_unlike));
 });
