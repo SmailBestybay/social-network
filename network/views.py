@@ -113,6 +113,10 @@ def follow_unfollow(request):
             follow_to_delete.delete()
             return redirect('profile', username=user_to_follow.username)
 
+@login_required
+def like_unlike(request):
+    pass
+
 @csrf_exempt
 def update_post(request, post_id):
     if request.method != "PUT":
