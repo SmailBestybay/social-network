@@ -36,13 +36,24 @@ export function edit_post(event) {
 }
 
 export function like_unlike(event) {
-    const liked = event.target.dataset['liked']
+    const liked = event.target.dataset.liked
     event.target.classList.toggle("fa-thumbs-down");
+
+    // get span.innerHtml after icon element
+    const count_element = event.target.nextElementSibling;
+    let count = Number(count_element.innerHTML);
+
+    // get post id from 3 parent elements up.
     
-    if (liked) {
-        console.log(liked)
+    if (liked === 'true') {
+        // unlike here
+        event.target.dataset.liked = false;
+        count_element.innerHTML = --count;
+        
     } 
-    else if (liked) {
-        console.log(liked)
+    else if (liked === 'false') {
+        // like here
+        event.target.dataset.liked = true;
+        count_element.innerHTML = ++count;
     }
 }

@@ -69,12 +69,12 @@
                             {% if user in post.get_users_that_liked %}
                                 <div>
                                     <i id="like" data-liked="true" class="fa fa-thumbs-up fa-thumbs-down"></i>
-                                    <span >Unlike {{ post.get_likes | length }}</span>
+                                    <span>{{ post.get_likes | length }}</span>
                                 </div>
                             {% else %}
                                 <div>
                                     <i id="like" data-liked="false" class="fa fa-thumbs-up"></i>
-                                    <span>Like {{ post.get_likes | length }}</span>
+                                    <span>{{ post.get_likes | length }}</span>
                                 </div>
                             {% endif %}
                         </div>
