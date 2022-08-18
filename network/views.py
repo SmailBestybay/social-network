@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
-from .models import User, Post, UserFollowing
+from .models import User, Post, UserFollowing, Like
 from django.core.paginator import Paginator
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -114,8 +114,26 @@ def follow_unfollow(request):
             return redirect('profile', username=user_to_follow.username)
 
 @login_required
+@csrf_exempt
 def like_unlike(request):
-    pass
+    data = json.loads(request.body)
+
+    try:
+        post = Post.objects.get(pk=data["id"])
+    except Post.DoesNotExist:
+        return JsonResponse({'error': 'Post not found'}, status=404)
+
+    if request.method == "POST":
+        # create a like entry
+        Like(user=request.user, post=post).save()
+        return JsonResponse({'message': 'post success'})
+    
+    if request.method == "DELETE":
+        # delete like entry
+        like = get_object_or_404(Like, post=post, user=request.user)
+        like.delete()
+
+        return JsonResponse({'message': 'delete success'})
 
 @csrf_exempt
 def update_post(request, post_id):

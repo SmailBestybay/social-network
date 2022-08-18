@@ -45,7 +45,6 @@ export function like_unlike(event) {
 
     // get post id from 3 parent elements up.
     const post_div = event.target.closest('.post-div')
-    console.log(post_div.getAttribute('id'));
     
     if (liked === 'true') {
         // unlike here
@@ -53,13 +52,24 @@ export function like_unlike(event) {
         count_element.innerHTML = --count;
 
         // fetch a delete request to like_unlike view based on post id
-        
+        fetch('/like_unlike', {
+            method: 'DELETE',
+            body: JSON.stringify({
+                id: post_div.getAttribute('id')
+            })
+        })
     } 
     else if (liked === 'false') {
         // like here
         event.target.dataset.liked = true;
         count_element.innerHTML = ++count;
 
-        // fetch a post like based on post id
+        // fetch a post request for like based on post id
+        fetch('/like_unlike', {
+            method: 'POST',
+            body: JSON.stringify({
+                id: post_div.getAttribute('id')
+            })
+        })
     }
 }
