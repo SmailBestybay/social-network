@@ -1,5 +1,5 @@
 from django.test import TestCase
-from network.models import User, Post, UserFollowing
+from network.models import User, Post, UserFollowing, Like
 
 # Create your tests here.
 # https://www.youtube.com/watch?v=hA_VxnxCHbo&ab_channel=TheDumbfounds
@@ -19,7 +19,8 @@ class ModelsTest(TestCase):
         self.u2 = User.objects.get(username='paul')
 
         # Create Post
-        Post.objects.create(user=self.u1, content="Test contents").save()
+        self.p1 = Post.objects.create(user=self.u1, content="Test contents").save()
+
 
         # Create valid and invalid UserFollowing
         UserFollowing.objects.create(user=self.u1, following_user=self.u2)
@@ -36,12 +37,9 @@ class ModelsTest(TestCase):
 
     def test_valid_post_like_count(self):
         p1 = Post.objects.get(user=self.u1)
-        self.assertGreaterEqual(0, p1.likes)
+        Like(user=self.u1, post=p1).save()
+        self.assertEqual(1, p1.likes.count())
 
-    def test_invalid_post_like_count(self):
-        p1 = Post.objects.get(user=self.u1)
-        p1.likes = -1
-        self.assertLess(p1.likes, 0)
 
     
 
