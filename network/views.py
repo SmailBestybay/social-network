@@ -135,7 +135,6 @@ def like_unlike(request):
 
         return JsonResponse({'message': 'delete success'})
 
-@csrf_exempt
 def update_post(request, post_id):
     if request.method != "PUT":
         return JsonResponse({'error': 'Put request required'}, status=400)

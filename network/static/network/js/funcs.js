@@ -20,11 +20,14 @@ export function edit_post(event) {
         if (!text_area.value) {
             alert('Post must not be empty')
         } else {
+            const csrftoken = getCookie('csrftoken'); // get token
             content.innerHTML = text_area.value;
             text_area.remove();
             save_button.replaceWith(edit_button);
             fetch(`/update_post/${post_div.id}`, {
                 method: 'PUT',
+                headers: {'X-CSRFToken': csrftoken}, // token
+                mode: 'same-origin', // request mode
                 body: JSON.stringify({
                     content: text_area.value
                 })
@@ -34,6 +37,24 @@ export function edit_post(event) {
 
     event.target.replaceWith(save_button);
 }
+// get cookie from django docs
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
 
 export function like_unlike(event) {
     const liked = event.target.dataset.liked

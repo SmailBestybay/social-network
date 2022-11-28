@@ -1,6 +1,7 @@
+__pycache__/
+*.py[cod]
+
 .venv/
 .vscode
 venv/
-tests/__pycache__/
 .coverage
-*.pyc
