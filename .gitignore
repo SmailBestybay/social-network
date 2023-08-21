@@ -1,8 +1,15 @@
-__pycache__/
-*.py[cod]
 
 .venv/
 .vscode
 venv/
 .coverage
 config.py
+
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+
+__pycache__/
+*.py[cod]
