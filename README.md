@@ -1,4 +1,4 @@
-# Network
+# Social Network
 
 Project made for Harvard’s Web50 certificate course.
 
@@ -18,3 +18,6 @@ Users can:
 - like and unlike posts  
 
 I also added tests for models and views of the application by using Django TestCase. 
+
+## Home page screenshot
+![all posts](allposts.jpg)
